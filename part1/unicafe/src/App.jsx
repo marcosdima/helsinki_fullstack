@@ -2,9 +2,14 @@ import { useState } from 'react'
 
 const StatisticLine = ({ text, count }) => {
   return (
-    <p>
-      {text} {count}
-    </p>
+    <tr>
+      <td>
+        {text}
+      </td> 
+      <td>
+        {count}
+      </td>
+    </tr>
   )
 }
 
@@ -23,9 +28,14 @@ const Average = ({ values, total }) => {
   if (total > 0) avr = sum / total;
 
   return (
-    <>
-      <p>average {avr}</p>
-    </>
+    <tr>
+      <td>
+        average
+      </td>
+      <td>
+        {avr}
+      </td>
+    </tr>
   )
 }
 
@@ -38,7 +48,14 @@ const Percentage = ({ reviews, target }) => {
   if (total > 0) percentage = (reviews[target] * 100) / total;
   
   return (
-    <p>{target} {percentage}%</p>
+    <tr>
+      <td>
+        {target}
+      </td> 
+      <td>
+        {percentage} %
+      </td>
+    </tr>
   )
 }
 
@@ -76,12 +93,16 @@ const Statistics = ({ values }) => {
   return (
     <>
       <h1>statistics</h1>
-      <StatisticLine text={goodText} count={good} />
-      <StatisticLine text={neutralText} count={neutral} />
-      <StatisticLine text={badText} count={bad} />
-      <StatisticLine text={allText} count={total} />
-      <Average values={[bad * badValue, good * goodValue, neutral * neutralValue]} total={total} />
-      <Percentage target={percentageTarget} reviews={reviews} />
+      <table>
+        <tbody>
+          <StatisticLine text={goodText} count={good} />
+          <StatisticLine text={neutralText} count={neutral} />   
+          <StatisticLine text={badText} count={bad} />   
+          <StatisticLine text={allText} count={total} />
+          <Average values={[bad * badValue, good * goodValue, neutral * neutralValue]} total={total} />
+          <Percentage target={percentageTarget} reviews={reviews} />
+        </tbody>
+      </table>
     </>
   );
 }
