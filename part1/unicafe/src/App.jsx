@@ -57,6 +57,14 @@ const Statistics = ({ values }) => {
   const neutralValue = 0
   const total = bad + good + neutral
 
+  // Check if there is any feedback...
+  if (total == 0) return (
+    <>
+      <h1>statistics</h1>
+      <p>No feedback given</p>
+    </>
+  );
+
   // Object to percentage component...
   const reviews = {
       positive: good,
