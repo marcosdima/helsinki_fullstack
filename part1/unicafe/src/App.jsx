@@ -42,11 +42,8 @@ const Percentage = ({ reviews, target }) => {
   )
 }
 
-const App = () => {
-  // guarda los clics de cada botón en su propio estado
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+const Statistics = ({ values }) => {
+  const { good, neutral, bad } = values;
 
   // Text variables...
   const goodText = 'good'
@@ -62,11 +59,35 @@ const App = () => {
 
   // Object to percentage component...
   const reviews = {
-    positive: good,
-    negative: bad,
-    neutral: neutral
+      positive: good,
+      negative: bad,
+      neutral: neutral
   }
   const percentageTarget = 'positive'
+
+  return (
+    <>
+      <h1>statistics</h1>
+      <Display text={goodText} count={good} />
+      <Display text={neutralText} count={neutral} />
+      <Display text={badText} count={bad} />
+      <Display text={allText} count={total} />
+      <Average values={[bad * badValue, good * goodValue, neutral * neutralValue]} total={total} />
+      <Percentage target={percentageTarget} reviews={reviews} />
+    </>
+  );
+}
+
+const App = () => {
+  // guarda los clics de cada botón en su propio estado
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  // Text variables...
+  const goodText = 'good'
+  const neutralText = 'neutral'
+  const badText = 'bad'
 
   const handleGoodReview = () => {
     setGood(good + 1)
@@ -80,19 +101,19 @@ const App = () => {
     setBad(bad + 1)
   }
 
+  const values = {
+    good: good,
+    neutral: neutral,
+    bad: bad
+  }
+
   return (
     <>
       <h1>give feedback</h1>
       <Button text={goodText} handler={handleGoodReview} />
       <Button text={neutralText} handler={handleNeutralReview} />
       <Button text={badText} handler={handleBadReview} />
-      <h1>statistics</h1>
-      <Display text={goodText} count={good} />
-      <Display text={neutralText} count={neutral} />
-      <Display text={badText} count={bad} />
-      <Display text={allText} count={total} />
-      <Average values={[bad * badValue, good * goodValue, neutral * neutralValue]} total={total} />
-      <Percentage target={percentageTarget} reviews={reviews} />
+      <Statistics values={values}/>
     </>
   )
 }
