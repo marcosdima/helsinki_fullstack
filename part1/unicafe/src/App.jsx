@@ -66,7 +66,7 @@ const App = () => {
     negative: bad,
     neutral: neutral
   }
-  const percentageTarget = 'negative'
+  const percentageTarget = 'positive'
 
   const handleGoodReview = () => {
     setGood(good + 1)
