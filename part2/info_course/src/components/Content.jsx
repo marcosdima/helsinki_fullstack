@@ -1,11 +1,15 @@
+import Parts from "./Parts";
+import Total from "./Total";
+
 const Content = ({ parts }) => {
+    let sumOfExercises = 0;
+    for (let part of parts) sumOfExercises += part.exercises;
+
+
     return (
         <>
-        {parts.map(part => 
-            <div key={part.id}>
-                {part.name} {part.exercises} 
-            </div>
-        )}
+            <Parts parts={parts} />
+            <Total total={sumOfExercises} />
         </>
     );
 };
