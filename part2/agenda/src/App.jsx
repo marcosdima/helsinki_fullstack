@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Agenda from './components/Agenda'
 import Input from './components/Input'
+import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -30,18 +31,25 @@ const App = () => {
   const handleNewPhone = (event) => { setNewPhone(event.target.value) }
   const handleFilter = (event) => { setFilter(event.target.value) }
 
+  const inputs = [
+    {
+      text: "name",
+      value: newName,
+      handler: handleNewName
+    },
+    {
+      text: "number",
+      value: newPhone,
+      handler: handleNewPhone
+    }
+  ]
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Input text={"filter shown with"} value={filter} handler={handleFilter} />
       <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <Input text={"name"} value={newName} handler={handleNewName} />
-        <Input text={"number"} value={newPhone} handler={handleNewPhone} />
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm submitFunction={addPerson} inputs={inputs}/>
       <Agenda persons={persons} filter={filter} />
     </div>
   )
