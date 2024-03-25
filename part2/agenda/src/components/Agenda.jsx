@@ -6,7 +6,7 @@ const Agenda = ({ persons }) => {
         <h2>Numbers</h2>
         <div>
             {persons.map(person =>
-                <Person key={person.name} name={person.name} />
+                <Person key={person.name} name={person.name} phone={person.phone} />
             )}
         </div>
         </>
