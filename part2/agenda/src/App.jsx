@@ -11,8 +11,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [notification, setNotificationMessage] = useState(null)
+  const [errorFlag, setErrorFlag] = useState(false)
 
-  const notificationTime = 5000 // Time in miliseconds...
+  // Time in miliseconds...
+  const notificationTime = 5000
 
   useEffect(() => {
     personService
@@ -73,12 +75,22 @@ const App = () => {
         setPersons(persons.filter(person => person.id !== id))
         handleNotificationMessage(`Deleted ${personDeleted.name}`)
       })
+      .catch(() => {
+        handleNotificationMessage(
+          `${person.name} has already been removed from server`,
+          true
+        )
+        setPersons(persons.filter(person => person.id !== id))
+      })
   }
 
   const handleNewName = (event) => { setNewName(event.target.value) }
   const handleNewNumber = (event) => { setNewNumber(event.target.value) }
   const handleFilter = (event) => { setFilter(event.target.value) }
-  const handleNotificationMessage = (message) => {
+  const handleNotificationMessage = (message, isAnError) => {
+    if (isAnError) setErrorFlag(true)
+    else setErrorFlag(false)
+
     setNotificationMessage(message)
     setTimeout(() => setNotificationMessage(null), notificationTime)
   }
@@ -99,7 +111,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={notification} isAnError={errorFlag} />
       <Input text={"filter shown with"} value={filter} handler={handleFilter} />
       <h2>add a new</h2>
       <PersonForm submitFunction={addPerson} inputs={inputs}/>

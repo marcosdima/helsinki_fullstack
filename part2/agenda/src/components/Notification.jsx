@@ -1,9 +1,10 @@
-const Notification = ({ message }) => {
+const Notification = ({ message, isAnError }) => {
     if (message === null) {
       return null
     }
 
     let color = 'green'
+    if (isAnError) color = 'red'
 
     const notificationStyle = {
         color,
