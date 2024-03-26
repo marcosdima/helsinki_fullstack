@@ -3,12 +3,16 @@ import Agenda from './components/Agenda'
 import Input from './components/Input'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notification, setNotificationMessage] = useState(null)
+
+  const notificationTime = 5000 // Time in miliseconds...
 
   useEffect(() => {
     personService
@@ -21,20 +25,25 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+
     if (newName === '' || newNumber === '') return
 
     const newPerson = { name: newName, number: newNumber }
 
+    // Check if the name already exists and ask if you want to update the number...
     const personExists = persons.find(person => person.name === newName)
     if (personExists) {
       const message = `${personExists.name} is already added to phonebook, replace the old number with a new one?`
-      if (window.confirm(message)) {
+      if (newNumber !== personExists.number && window.confirm(message)) {
         personService
           .update(personExists.id, newPerson)
           .then(personUpdated => {
             setPersons(persons.map(person => person.id !== personExists.id ? person : personUpdated))
             setNewName("")
             setNewNumber('')
+            handleNotificationMessage(
+              `Modified ${personExists.name} number: ${personExists.number} to ${newNumber}`
+            )
           })
       }
       return
@@ -47,6 +56,7 @@ const App = () => {
           setPersons(persons.concat(personAdded))
           setNewName("")
           setNewNumber('')
+          handleNotificationMessage(`Added ${personAdded.name}`)
       })
   }
 
@@ -61,12 +71,17 @@ const App = () => {
       .then(personDeleted => {
         console.log(`${personDeleted.name} was deleted succesfully...`)
         setPersons(persons.filter(person => person.id !== id))
+        handleNotificationMessage(`Deleted ${personDeleted.name}`)
       })
   }
 
   const handleNewName = (event) => { setNewName(event.target.value) }
   const handleNewNumber = (event) => { setNewNumber(event.target.value) }
   const handleFilter = (event) => { setFilter(event.target.value) }
+  const handleNotificationMessage = (message) => {
+    setNotificationMessage(message)
+    setTimeout(() => setNotificationMessage(null), notificationTime)
+  }
 
   const inputs = [
     {
@@ -84,6 +99,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Input text={"filter shown with"} value={filter} handler={handleFilter} />
       <h2>add a new</h2>
       <PersonForm submitFunction={addPerson} inputs={inputs}/>
