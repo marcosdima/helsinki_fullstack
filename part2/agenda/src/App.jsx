@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Agenda from './components/Agenda'
 import Input from './components/Input'
 import PersonForm from './components/PersonForm'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,24 +11,28 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-   axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
-    }
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      }
   )}
-  ,[])
+  , [])
 
   const addPerson = (event) => {
     event.preventDefault()
-    const name = { name: newName, number: newNumber, id: persons.length + 1 }
+    const newPerson = { name: newName, number: newNumber, id: persons.length + 1 }
 
     const nameExists = persons.find(person => person.name === newName)
-
     if (nameExists) return alert(`Name '${newName}' already exists...`)
 
-    setPersons(persons.concat(name))
-    setNewName("")
+    personService
+      .create(newPerson)
+      .then(
+        personAdded => {
+          setPersons(persons.concat(personAdded))
+          setNewName("")
+      })
   }
 
   const handleNewName = (event) => { setNewName(event.target.value) }
