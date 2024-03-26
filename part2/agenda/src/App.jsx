@@ -21,7 +21,7 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    const newPerson = { name: newName, number: newNumber, id: persons.length + 1 }
+    const newPerson = { name: newName, number: newNumber }
 
     const nameExists = persons.find(person => person.name === newName)
     if (nameExists) return alert(`Name '${newName}' already exists...`)
@@ -32,6 +32,21 @@ const App = () => {
         personAdded => {
           setPersons(persons.concat(personAdded))
           setNewName("")
+          setNewNumber('')
+      })
+  }
+
+  const deletePerson = id => {
+    const [person] = persons.filter(person => person.id === id)
+    const message = `Are you sure you want to delete ${person.name}?`
+
+    if (!window.confirm(message)) return
+
+    personService
+      .remove(id)
+      .then(personDeleted => {
+        console.log(`${personDeleted.name} was deleted succesfully...`)
+        setPersons(persons.filter(person => person.id !== id))
       })
   }
 
@@ -58,7 +73,7 @@ const App = () => {
       <Input text={"filter shown with"} value={filter} handler={handleFilter} />
       <h2>add a new</h2>
       <PersonForm submitFunction={addPerson} inputs={inputs}/>
-      <Agenda persons={persons} filter={filter} />
+      <Agenda persons={persons} filter={filter} deletePerson={deletePerson} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import Person from "./Person"
 
-const Agenda = ({ persons, filter }) => {
+const Agenda = ({ persons, filter, deletePerson }) => {
     const lowerFilter = filter.toLowerCase()
     const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(lowerFilter))
     return (
@@ -8,7 +8,12 @@ const Agenda = ({ persons, filter }) => {
         <h2>Numbers</h2>
         <div>
             {filteredPersons.map(person =>
-                <Person key={person.id} name={person.name} number={person.number} />
+                <span key={person.id}>
+                    <div>
+                        <Person name={person.name} number={person.number} />
+                        <button onClick={() => deletePerson(person.id)} >delete</button>
+                    </div>
+                </span>
             )}
         </div>
         </>
