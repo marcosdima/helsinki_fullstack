@@ -1,23 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Agenda from './components/Agenda'
 import Input from './components/Input'
 import PersonForm from './components/PersonForm'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', phone: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', phone: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', phone: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
-  const [newPhone, setNewPhone] = useState('')
+  const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
 
+  useEffect(() => {
+   axios
+    .get('http://localhost:3001/persons')
+    .then(response => {
+      setPersons(response.data)
+    }
+  )}
+  ,[])
 
   const addPerson = (event) => {
     event.preventDefault()
-    const name = { name: newName, phone: newPhone, id: persons.length + 1 }
+    const name = { name: newName, number: newNumber, id: persons.length + 1 }
 
     const nameExists = persons.find(person => person.name === newName)
 
@@ -28,7 +32,7 @@ const App = () => {
   }
 
   const handleNewName = (event) => { setNewName(event.target.value) }
-  const handleNewPhone = (event) => { setNewPhone(event.target.value) }
+  const handleNewNumber = (event) => { setNewNumber(event.target.value) }
   const handleFilter = (event) => { setFilter(event.target.value) }
 
   const inputs = [
@@ -39,8 +43,8 @@ const App = () => {
     },
     {
       text: "number",
-      value: newPhone,
-      handler: handleNewPhone
+      value: newNumber,
+      handler: handleNewNumber
     }
   ]
 
