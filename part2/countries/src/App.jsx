@@ -45,11 +45,18 @@ function App() {
     setCountryTarget(event.target.value.toLowerCase())
   }
 
+  const handleShowCountry = (name) => {
+    const target = countries.find(element => element.name.common === name)
+    setCountry(target)
+    setNotification('')
+    setFilteredCountries([])
+  }
+
   return (
     <>
       <Input value={countryTarget} handler={handleSetCountryTarget} text="find countries" />
       <Notification message={notification} />
-      <Countries countries={filteredCountries} />
+      <Countries countries={filteredCountries} show={handleShowCountry}/>
       <Country country={country} />
     </>
   )
