@@ -54,16 +54,19 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const data = request.body
 
-  if (!data.name) return response.status(400).json({ 
-    error: 'name missing' 
-  })
+  if (!data.name) return response.status(400).json({ error: 'name missing' })
+  else if (!data.phone) return response.status(400).json({ error: 'phone missing' })
+
+  const alreadyExists = agenda.find(person => person.name === data.name)
+
+  if (alreadyExists) return response.status(400).json({ error: 'name must be unique' })
 
   const person = {
     name: data.name,
     phone: data?.phone ?? '',
     id: generateID()
   }
-
+  agenda = agenda.concat(person)
   response.json(person)
 })
 
