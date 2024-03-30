@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 
-const agenda = [
+let agenda = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -36,6 +36,13 @@ app.get('/api/persons/:id', (request, response) => {
     return response.status(404).end()
 
   response.json(target)
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  agenda = agenda.filter(person => person.id !== id) 
+  console.log(agenda)
+  response.status(204).end()
 })
 
 
