@@ -28,6 +28,17 @@ app.get('/api/persons', (request, response) => {
   response.json(agenda)
 })
 
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const target = agenda.find(person => person.id === id) 
+  
+  if (!target) 
+    return response.status(404).end()
+
+  response.json(target)
+})
+
+
 app.get('/info', (request, response) => {
   const info = `</p>Phonebook has info for ${agenda.length} people</p>`
   const date = new Date()
