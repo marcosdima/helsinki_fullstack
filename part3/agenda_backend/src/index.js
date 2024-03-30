@@ -25,11 +25,19 @@ const agenda = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(agenda)
+  response.json(agenda)
+})
+
+app.get('/info', (request, response) => {
+  const info = `</p>Phonebook has info for ${agenda.length} people</p>`
+  const date = new Date()
+  response.send(
+    info + date
+  )
 })
 
 const PORT = 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-    console.log(`URL: http://localhost:${PORT}/api/persons`)
+  console.log(`Server running on port ${PORT}`)
+  console.log(`URL: http://localhost:${PORT}/api/persons`)
 })
