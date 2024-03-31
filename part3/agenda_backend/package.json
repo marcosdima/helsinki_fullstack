@@ -4,6 +4,7 @@
   "description": "Exercise for Helsinki",
   "main": "index.js",
   "scripts": {
+    "build": "rm -rf dist && cd ../agenda/ && npm run build && cp -r dist ../agenda_backend",
     "start": "node ./src/index.js",
     "dev": "nodemon  ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
