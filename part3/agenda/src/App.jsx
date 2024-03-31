@@ -86,7 +86,10 @@ const App = () => {
 
   const handleNewName = (event) => { setNewName(event.target.value) }
   const handleNewNumber = (event) => { setNewNumber(event.target.value) }
-  const handleFilter = (event) => { setFilter(event.target.value) }
+  const handleFilter = (event) => { 
+    console.log(`Filtering by: ${event.target.value}`)
+    setFilter(event.target.value)
+  }
   const handleNotificationMessage = (message, isAnError) => {
     if (isAnError) setErrorFlag(true)
     else setErrorFlag(false)
