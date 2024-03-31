@@ -4,7 +4,7 @@
   "description": "Exercise for Helsinki",
   "main": "index.js",
   "scripts": {
-    "build:ui": "rm -rf dist && cd ../agenda && npm run build && cp -r dist ../agenda_backend",
+    "build:ui": "rm -rf dist && cd ../agenda && npm install && npm run build && cp -r dist ../agenda_backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "start": "node ./src/index.js",
     "dev": "nodemon  ./src/index.js",
