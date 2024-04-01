@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { countBy, last, toPairs } = require('lodash')
+const { countBy, last, toPairs, groupBy } = require('lodash')
 
 const dummy = (blogs) => 1
 
@@ -30,9 +30,31 @@ const mostBlogs = (blogs_input) => {
 	}
 }
 
+const mostLikes = (blogs) => {
+	const bloggers = groupBy(blogs, 'author')
+	const likes_list = toPairs(bloggers)
+		.map(blogger => {
+			return {
+				author: blogger[0],
+				likes: blogger[1].reduce((sum, item) => sum + item.likes, 0)
+			}
+		})
+
+	const { author, likes } = likes_list.reduce(
+		(favorite, current) => favorite.likes > current.likes ? favorite : current,
+		likes_list[0].likes
+	)
+	
+	return {
+		author,
+		likes
+	}
+}
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favoriteBlog,
-	mostBlogs
+	mostBlogs,
+	mostLikes
 }
