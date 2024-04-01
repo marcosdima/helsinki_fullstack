@@ -6,7 +6,7 @@ const Person = require('../models/person')
 const app = express()
 let morgan = require('morgan')
 
-morgan.token('res-content', function (req, res) { return JSON.stringify(req.body) })
+morgan.token('res-content', function (req) { return JSON.stringify(req.body) })
 app.use(express.json())
 app.use(express.static('dist'))
 app.use(cors())
@@ -31,7 +31,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 // Get all...
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (response) => {
   Person.find({}).then(res => {
     response.json(res)
   })
@@ -52,7 +52,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
   const id = request.params.id
   Person.findByIdAndDelete(id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -79,7 +79,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 // Info...
-app.get('/info', (request, response, next) => {
+app.get('/info', (response, next) => {
   Person
     .find({}).then(res => {
       const info = `</p>Phonebook has info of ${res.length} people</p>`
@@ -91,25 +91,26 @@ app.get('/info', (request, response, next) => {
 
 
 // ... penultimate,
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 // ... last one.
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, response, next) => {
   console.error(error.message)
   console.log(error.name)
 
-  if (error.name === 'CastError') 
+  if (error.name === 'CastError')
     return response.status(400).send({ error: 'malformatted id' })
-  else if (error.name === 'ValidationError') 
+  else if (error.name === 'ValidationError')
     return response.status(400).json({ error: error.message })
-  
+
   next(error)
 }
 app.use(errorHandler)
 
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)

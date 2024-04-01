@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
@@ -7,7 +8,7 @@ const url = process.env.MONGODB_URI
 console.log('connecting to', url)
 
 mongoose.connect(url)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch((error) => {
@@ -15,24 +16,24 @@ mongoose.connect(url)
   })
 
 const personSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minLength: 3,
-      required: true
-    },
-    number: {
-      type: String,
-      minLength: 8,
-      required: true,
-      validate: {
-        validator: function(v) {
-          const parts = v.split('-')
-          if (parts.length != 2) return false
-          else if (parts[0].length == 1 || parts[0].length > 2) return false
-        },
-        message: props => `${props.value} is not a valid phone number!`
-      }
-    },
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    required: true,
+    validate: {
+      validator: function(v) {
+        const parts = v.split('-')
+        if (parts.length !== 2) return false
+        else if (parts[0].length === 1 || parts[0].length > 2) return false
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    }
+  },
 })
 
 personSchema.set('toJSON', {
