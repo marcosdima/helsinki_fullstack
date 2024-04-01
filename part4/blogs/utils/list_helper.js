@@ -1,4 +1,6 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
+const { countBy, last, toPairs } = require('lodash')
+
 const dummy = (blogs) => 1
 
 const totalLikes = (blogs) => {
@@ -19,8 +21,18 @@ const favoriteBlog = (blogs) => {
 	return { title, author, likes }
 }
 
+const mostBlogs = (blogs_input) => {
+	const bloggers = countBy(blogs_input, 'author')
+	const [author, blogs] = last(toPairs(bloggers))
+	return {
+		author,
+		blogs
+	}
+}
+
 module.exports = {
 	dummy,
 	totalLikes,
-	favoriteBlog
+	favoriteBlog,
+	mostBlogs
 }
