@@ -31,7 +31,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 // Get all...
-app.get('/api/persons', (response) => {
+app.get('/api/persons', (request, response) => {
   Person.find({}).then(res => {
     response.json(res)
   })
@@ -79,7 +79,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 // Info...
-app.get('/info', (response, next) => {
+app.get('/info', (require, response, next) => {
   Person
     .find({}).then(res => {
       const info = `</p>Phonebook has info of ${res.length} people</p>`
@@ -96,7 +96,7 @@ const unknownEndpoint = (response) => {
 }
 app.use(unknownEndpoint)
 // ... last one.
-const errorHandler = (error, response, next) => {
+const errorHandler = (error, require, response, next) => {
   console.error(error.message)
   console.log(error.name)
 
