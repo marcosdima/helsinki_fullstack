@@ -37,7 +37,7 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-  const id = Number(request.params.id)
+  const id = request.params.id
   Person.findById(id)
     .then(person => {
       if (person) response.json(person)
@@ -47,7 +47,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
+  const id = request.params.id
   Person.findByIdAndDelete(id)
     .then(result => {
       response.status(204).end()
@@ -56,7 +56,7 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-  const info = `</p>Phonebook has info for ${agenda.length} people</p>`
+  const info = `</p>Phonebook has info for ${0} people</p>`
   const date = new Date()
   response.send(
     info + date
