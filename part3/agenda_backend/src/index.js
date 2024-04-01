@@ -13,22 +13,21 @@ app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :res-content'))
 
 // Add a person to the agenda...
-app.post('/api/persons', (request, response) => {
-  const data = request.body
-
-  if (!data.name) return response.status(400).json({ error: 'name missing' })
-  else if (!data.number) return response.status(400).json({ error: 'number missing' })
+app.post('/api/persons', (request, response, next) => {
+  const { name, number } = request.body
 
   // Person.find({name: data.name}).then(res => {
   //   return response.status(400).json({ error: 'name must be unique' })
   // })
 
   const person = new Person({
-    name: data.name,
-    number: data.number,
+    name,
+    number,
   })
 
-  person.save().then(res => response.json(res))
+  person.save()
+    .then(res => response.json(res))
+    .catch(error => next(error))
 })
 
 // Get all...
@@ -61,14 +60,18 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 // Update...
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+  const { name, number } = request.body
 
   const person = {
-    name: body.name,
-    number: body.number,
+    name,
+    number,
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(
+    request.params.id,
+    person,
+    { new: true, runValidators: true, context: 'query' }
+  )
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
@@ -84,8 +87,6 @@ app.get('/info', (request, response, next) => {
       response.send(`${info} ${date}`)
     })
     .catch(error => next(error))
-
-  
 })
 
 
@@ -97,8 +98,12 @@ app.use(unknownEndpoint)
 // ... last one.
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
+  console.log(error.name)
 
-  if (error.name === 'CastError') return response.status(400).send({ error: 'malformatted id' })
+  if (error.name === 'CastError') 
+    return response.status(400).send({ error: 'malformatted id' })
+  else if (error.name === 'ValidationError') 
+    return response.status(400).json({ error: error.message })
   
   next(error)
 }

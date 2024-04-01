@@ -14,7 +14,7 @@ const App = () => {
   const [errorFlag, setErrorFlag] = useState(false)
 
   // Time in miliseconds...
-  const notificationTime = 5000
+  const notificationTime = 8000
 
   useEffect(() => {
     personService
@@ -47,6 +47,10 @@ const App = () => {
               `Modified ${personExists.name} number: ${personExists.number} to ${newNumber}`
             )
           })
+          .catch(error => {
+            console.log(error.response.data.error)
+            handleNotificationMessage(error.response.data.error, true)
+          })
       }
       return
     }
@@ -59,6 +63,10 @@ const App = () => {
           setNewName("")
           setNewNumber('')
           handleNotificationMessage(`Added ${personAdded.name}`)
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
+        handleNotificationMessage(error.response.data.error, true)
       })
   }
 
