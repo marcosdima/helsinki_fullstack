@@ -75,12 +75,17 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-  const info = `</p>Phonebook has info for ${0} people</p>`
-  const date = new Date()
-  response.send(
-    info + date
-  )
+// Info...
+app.get('/info', (request, response, next) => {
+  Person
+    .find({}).then(res => {
+      const info = `</p>Phonebook has info of ${res.length} people</p>`
+      const date = new Date()
+      response.send(`${info} ${date}`)
+    })
+    .catch(error => next(error))
+
+  
 })
 
 
