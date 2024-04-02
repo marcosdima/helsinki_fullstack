@@ -19,7 +19,7 @@ describe('Blogs composition...', () => {
 		await api
 			.post('/api/blogs')
 			.send({})
-			.expect(404)
+			.expect(400)
 	})
 	test('id is "id"... not _id', async () => {
 		const { body: blogs } = await api.get('/api/blogs')
@@ -84,6 +84,25 @@ describe('Deletion...', () => {
 	
 		expect(titlesAfterDeletion).not.toContain(title)
 	}, 100000)
+})
+
+describe('Update...', () => {
+	test('A blog recieve a like!', async() => {
+		// Get the blogs array first element...
+		const { body: [blogTarget] } = await api.get('/api/blogs')
+		// Creates a copy of blogTarget with +1 likes...
+		const blogModified = {
+			...blogTarget,
+			likes: blogTarget.likes + 1
+		}
+		// Updates the blog...
+		const { body: blogUpdated } = await api
+			.put(`/api/blogs/${blogTarget.id}`)
+			.send(blogModified)
+			.expect(200)
+		
+		expect(blogUpdated.likes).toBe(blogTarget.likes + 1)
+	}, 10000)
 })
 
 afterAll(() => {
