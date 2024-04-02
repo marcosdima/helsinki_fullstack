@@ -56,6 +56,13 @@ test('As everyone knows, when in doubt, zero...', async() => {
 	expect(blogAdded.likes).toBe(0)
 })
 
+test('If no title or no url, go back home...', async() => {
+	await api
+		.post('/api/blogs')
+		.send({})
+		.expect(404)
+})
+
 afterAll(() => {
 	mongoose.connection.close()
 })
