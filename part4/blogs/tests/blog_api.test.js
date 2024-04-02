@@ -42,6 +42,19 @@ test('lets add a blog...', async () => {
 	expect(titles).toContain('Hello world vibes')
 }, 100000)
 
+test('As everyone knows, when in doubt, zero...', async() => {
+	const blog = {
+		title: 'zero likes'
+	}
+
+	const { body: blogAdded } = await api
+		.post('/api/blogs')
+		.send(blog)
+		.expect(201)
+
+	expect(blogAdded.likes).toBeDefined()
+	expect(blogAdded.likes).toBe(0)
+})
 
 afterAll(() => {
 	mongoose.connection.close()
