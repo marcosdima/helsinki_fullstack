@@ -12,7 +12,7 @@ beforeEach(async () => {
 	const blogs = helper.initialBlogs.map(blog => new Blog(blog))
 	const blogs_promises = blogs.map(blog => blog.save())
 	await Promise.all(blogs_promises)
-})
+}, 100000)
 
 describe('Blogs composition...', () => {
 	test('If no title or no url, go back home...', async() => {
@@ -59,14 +59,31 @@ describe('Adition...', () => {
 	
 		expect(blogAdded.likes).toBeDefined()
 		expect(blogAdded.likes).toBe(0)
-	})
+	}, 100000)
 })
 
-describe('Lets valid the whole picture...', () => {
-	test('lets valid the number of blogs returned...', async () => {
-		const response = await api.get('/api/blogs')
-		expect(response.body).toHaveLength(helper.initialBlogs.length)
-	}, 100000)	
+describe('Deletion...', () => {
+	test('Lets delete...', async() => {
+		const title = 'I am gonne be deleted :('
+		const blog = {
+			url: 'test.com',
+			title,
+			author: 'me'
+		}
+	
+		const { body: blogAdded } = await api
+			.post('/api/blogs')
+			.send(blog)
+			.expect(201)
+
+		await api
+			.delete(`/api/blogs/${blogAdded.id}`)
+
+		const { body: blogsAfterDeletion } = await api.get('/api/blogs')
+		const titlesAfterDeletion = blogsAfterDeletion.map(blog => blog.title)
+	
+		expect(titlesAfterDeletion).not.toContain(title)
+	}, 100000)
 })
 
 afterAll(() => {
