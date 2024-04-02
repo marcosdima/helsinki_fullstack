@@ -24,6 +24,25 @@ test('id is "id"... not _id', async () => {
 	blogs.forEach(element => expect(element.id).toBeDefined())
 }, 100000)
 
+test('lets add a blog...', async () => {
+	const blog = {
+		author: 'no-exists',
+		title: 'Hello world vibes'
+	}
+
+	await api
+		.post('/api/blogs')
+		.send(blog)
+		.expect(201)
+
+	const { body: totalBlogs } = await api.get('/api/blogs')
+	const titles = totalBlogs.map(blog => blog.title)
+
+	expect(totalBlogs).toHaveLength(helper.initialBlogs.length + 1)
+	expect(titles).toContain('Hello world vibes')
+}, 100000)
+
+
 afterAll(() => {
 	mongoose.connection.close()
 })
