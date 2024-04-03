@@ -75,8 +75,16 @@ const rootUser = async () => {
 	return user.id
 }
 
+const userDefault = () => {
+	return {
+		username: 'marcosss',
+		name: 'Marcos Di Matteo',
+		password: 'testpass',
+	}
+}
+
 module.exports = {
 	initialBlogs, nonExistingId, 
 	blogsInDb, usersInDB,
-	rootUser
+	rootUser, userDefault
 }

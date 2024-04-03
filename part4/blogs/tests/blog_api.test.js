@@ -65,7 +65,7 @@ describe('Blogs Adition...', () => {
 			.post('/api/blogs')
 			.send(blog)
 			.expect(201)
-		console.log(blogAdded)
+
 		expect(blogAdded.likes).toBeDefined()
 		expect(blogAdded.likes).toBe(0)
 	}, 100000)
@@ -119,11 +119,7 @@ describe('When there is initially one user in db', () => {
 	test('Creation succeeds with a fresh username', async () => {
 		const usersAtStart = await helper.usersInDB()
 
-		const newUser = {
-			username: 'marcosss',
-			name: 'Marcos Di Matteo',
-			password: 'testpass',
-		}
+		const newUser = helper.userDefault()
 	
 		await api
 			.post('/api/users')
@@ -157,6 +153,57 @@ describe('When there is initially one user in db', () => {
 	
 		const usersAtEnd = await helper.usersInDB()
 		expect(usersAtEnd).toEqual(usersAtStart)
+	}, 100000)
+
+	test('Invalid Password...', async () => {
+		const newUser = {
+			...helper.userDefault(),
+			password: '12'
+		}
+		const { text } = await api
+			.post('/api/users/')
+			.send(newUser)
+			.expect(400)
+		const { error } = JSON.parse(text)
+		expect(error).toBe('password has to be at least 3 characters length')
+	}, 100000)
+
+	test('Invalid Username...', async () => {
+		const newUser = {
+			...helper.userDefault(),
+			username: 'ab'
+		}
+		
+		const { text } = await api
+			.post('/api/users/')
+			.send(newUser)
+			.expect(400)
+
+		const { error } = JSON.parse(text)
+		expect(error).toBe('User validation failed: username: Path `username` (`ab`) is shorter than the minimum allowed length (3).')
+	}, 100000)
+})
+
+describe('Users Deletion...', () => {
+	test('Adding and deleting...', async () => {
+		const usersAtStart = await helper.usersInDB()
+
+		const newUser = helper.userDefault()
+	
+		const { body: userAdded } = await api
+			.post('/api/users')
+			.send(newUser)
+	
+		const usersPostAdd = await helper.usersInDB()
+		expect(usersPostAdd).toHaveLength(usersAtStart.length + 1)
+
+		await api
+			.delete(`/api/users/${userAdded.id}`)
+			.expect(204)
+
+		const usersAtEnd = await helper.usersInDB()
+		const usernames = usersAtEnd.map(u => u.username)
+		expect(usernames).not.toContain(newUser.username)
 	}, 100000)
 })
 
