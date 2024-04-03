@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -17,14 +16,13 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-	let { userId, ...body } = request.body
-	body['user'] = userId
-	const blog = new Blog(body)
-	
-	const { id } = jwt.verify(request.token, process.env.SECRET)
-	if (!id) return response.status(401).json({ error: 'token invalid' })
+	if (!request.user) return response.status(401).json({ error: 'token invalid' })
 
-	const user = await User.findById(id)
+	let { body } = request
+	body['user'] = request.user.id
+	const blog = new Blog(body)
+
+	const user = await User.findById(request.user.id)
 
 	if (!user) 
 		return response.status(400).json({ error: 'User no specified...' })
@@ -40,13 +38,12 @@ blogsRouter.post('/', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
 	const id = request.params.id
 	
-	const { id: userId } = jwt.verify(request.token, process.env.SECRET)
-	if (!userId) return response.status(401).json({ error: 'token invalid' })
+	if (!request.user) return response.status(401).json({ error: 'token invalid' })
 
 	const blog = await Blog.findById(id)
-	const user = await User.findById(userId)
+	const user = await User.findById(request.user.id)
 
-	if (blog.user.toString() != user.id) return response.status(401).json({ error: `this blog doesn't belong to ${user.name}` })
+	if (blog.user.toString() !== user.id) return response.status(401).json({ error: `this blog doesn't belong to ${user.name}` })
 
 	await Blog.findByIdAndDelete(id)
 	response.status(204).end()
