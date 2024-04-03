@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const initialBlogs = [
 	{
@@ -75,6 +77,18 @@ const rootUser = async () => {
 	return user.id
 }
 
+const rootToken = async () => {
+	const user = {
+		username: 'root',
+		id: await rootUser(),
+	}
+	return jwt.sign(
+		user,
+		process.env.SECRET,
+		{ expiresIn: 60*60 }
+	)
+}
+
 const userDefault = () => {
 	return {
 		username: 'marcosss',
@@ -86,5 +100,6 @@ const userDefault = () => {
 module.exports = {
 	initialBlogs, nonExistingId, 
 	blogsInDb, usersInDB,
-	rootUser, userDefault
+	rootUser, userDefault,
+	rootToken
 }

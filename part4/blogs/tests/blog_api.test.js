@@ -26,6 +26,7 @@ describe('Blogs composition...', () => {
 		await api
 			.post('/api/blogs')
 			.send({})
+			.set('Authorization', 'Bearer ' + await helper.rootToken()) 
 			.expect(400)
 	})
 	test('id is "id"... not _id', async () => {
@@ -46,6 +47,7 @@ describe('Blogs Adition...', () => {
 		await api
 			.post('/api/blogs')
 			.send(blog)
+			.set('Authorization', 'Bearer ' + await helper.rootToken()) 
 			.expect(201)
 	
 		const { body: totalBlogs } = await api.get('/api/blogs')
@@ -64,10 +66,23 @@ describe('Blogs Adition...', () => {
 		const { body: blogAdded } = await api
 			.post('/api/blogs')
 			.send(blog)
+			.set('Authorization', 'Bearer ' + await helper.rootToken()) 
 			.expect(201)
 
 		expect(blogAdded.likes).toBeDefined()
 		expect(blogAdded.likes).toBe(0)
+	}, 100000)
+	test('Adition with no token...', async() => {
+		const blog = {
+			url: 'test.com',
+			title: 'no token',
+			userId: await helper.rootUser()
+		}
+	
+		await api
+			.post('/api/blogs')
+			.send(blog)
+			.expect(401)
 	}, 100000)
 })
 
@@ -80,19 +95,42 @@ describe('Blogs Deletion...', () => {
 			author: 'me',
 			userId: await helper.rootUser()
 		}
+		const token = await helper.rootToken()
 	
 		const { body: blogAdded } = await api
 			.post('/api/blogs')
 			.send(blog)
+			.set('Authorization', 'Bearer ' + token) 
 			.expect(201)
 
 		await api
 			.delete(`/api/blogs/${blogAdded.id}`)
+			.set('Authorization', 'Bearer ' + token) 
 
 		const { body: blogsAfterDeletion } = await api.get('/api/blogs')
 		const titlesAfterDeletion = blogsAfterDeletion.map(blog => blog.title)
 	
 		expect(titlesAfterDeletion).not.toContain(title)
+	}, 100000)
+	test('Lets delete... but with no token', async() => {
+		const title = 'I am gonne be deleted :('
+		const blog = {
+			url: 'test.com',
+			title,
+			author: 'me',
+			userId: await helper.rootUser()
+		}
+		const token = await helper.rootToken()
+	
+		const { body: blogAdded } = await api
+			.post('/api/blogs')
+			.send(blog)
+			.set('Authorization', 'Bearer ' + token) 
+			.expect(201)
+
+		await api
+			.delete(`/api/blogs/${blogAdded.id}`)
+			.expect(401)
 	}, 100000)
 })
 
