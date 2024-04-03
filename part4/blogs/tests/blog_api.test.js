@@ -8,12 +8,17 @@ const helper = require('./test_helper')
 
 const api = supertest(app)
 
+
 beforeEach(async () => {
 	await Blog.deleteMany({})
-
 	const blogs = helper.initialBlogs.map(blog => new Blog(blog))
 	const blogs_promises = blogs.map(blog => blog.save())
 	await Promise.all(blogs_promises)
+	
+	await User.deleteMany({})
+	const passwordHash = await bcrypt.hash('sekret', 10)
+	const user = new User({ username: 'root', passwordHash })
+	await user.save()
 }, 100000)
 
 describe('Blogs composition...', () => {
@@ -34,7 +39,8 @@ describe('Blogs Adition...', () => {
 		const blog = {
 			author: 'no-exists',
 			title: 'Hello world vibes',
-			url: 'test.com'
+			url: 'test.com',
+			userId: await helper.rootUser()
 		}
 	
 		await api
@@ -51,14 +57,15 @@ describe('Blogs Adition...', () => {
 	test('As everyone knows, when in doubt, zero...', async() => {
 		const blog = {
 			url: 'test.com',
-			title: 'zero likes'
+			title: 'zero likes',
+			userId: await helper.rootUser()
 		}
 	
 		const { body: blogAdded } = await api
 			.post('/api/blogs')
 			.send(blog)
 			.expect(201)
-	
+		console.log(blogAdded)
 		expect(blogAdded.likes).toBeDefined()
 		expect(blogAdded.likes).toBe(0)
 	}, 100000)
@@ -70,7 +77,8 @@ describe('Blogs Deletion...', () => {
 		const blog = {
 			url: 'test.com',
 			title,
-			author: 'me'
+			author: 'me',
+			userId: await helper.rootUser()
 		}
 	
 		const { body: blogAdded } = await api
@@ -108,18 +116,9 @@ describe('Blogs Update...', () => {
 })
 
 describe('When there is initially one user in db', () => {
-	beforeEach(async () => {
-		await User.deleteMany({})
-	
-		const passwordHash = await bcrypt.hash('sekret', 10)
-		const user = new User({ username: 'root', passwordHash })
-	
-		await user.save()
-	})
-
 	test('Creation succeeds with a fresh username', async () => {
 		const usersAtStart = await helper.usersInDB()
-	
+
 		const newUser = {
 			username: 'marcosss',
 			name: 'Marcos Di Matteo',

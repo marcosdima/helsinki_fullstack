@@ -70,7 +70,13 @@ const usersInDB = async () => {
 	return users.map(user => user.toJSON())
 }
 
+const rootUser = async () => {
+	const user = await User.findOne({ username: 'root' })
+	return user.id
+}
+
 module.exports = {
 	initialBlogs, nonExistingId, 
-	blogsInDb, usersInDB
+	blogsInDb, usersInDB,
+	rootUser
 }
