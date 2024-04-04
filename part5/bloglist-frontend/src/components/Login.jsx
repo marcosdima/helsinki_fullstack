@@ -1,4 +1,4 @@
-const Login = ({ handleLogin, handleUsername, handlePassword, password, username }) => {
+const Login = ({ handleLogin, setUsername, setPassword, password, username }) => {
     return (
         <>
             <form onSubmit={handleLogin}>
