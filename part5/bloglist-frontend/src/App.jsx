@@ -18,15 +18,26 @@ const App = () => {
     handleSetBlogs()
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
+    if (loggedUserJSON) {
+      setUser(loggedUserJSON)
+      blogService.setToken(loggedUserJSON.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const userLogin = await loginService.login({
         username, password,
       })
+      window.localStorage.setItem(
+        'loggedBlogappUser',
+        JSON.stringify(userLogin)
+      ) 
 
-      //blogService.setToken(user.token)
-      
+      blogService.setToken(userLogin.token)
       setUser(userLogin)
       setUsername('')
       setPassword('')
