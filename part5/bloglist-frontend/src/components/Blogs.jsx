@@ -1,3 +1,5 @@
+import Blog from './Blog'
+
 const Blogs = ({ blogs }) => {
     return (
         <>
@@ -9,4 +11,4 @@ const Blogs = ({ blogs }) => {
     )
 }
 
-export default Blog
+export default Blogs
