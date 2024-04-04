@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -9,6 +10,9 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     const handleSetBlogs = async () => {
@@ -31,6 +35,12 @@ const App = () => {
     window.localStorage.clear()
     setUsername('')
     setPassword('')
+  }
+
+  const createBlog = () => { 
+    const blog = { title, author, url }
+    blogService.create(blog)
+    setBlogs(blogs.concat(blog))
   }
 
   const handleLogin = async (event) => {
@@ -61,6 +71,24 @@ const App = () => {
     setPassword={setPassword}
   />
 
+  const fields = [
+    {
+      name: "title",
+      variable: title,
+      setAtt: setTitle
+    },
+    {
+      name: "author",
+      variable: author,
+      setAtt: setAuthor
+    },
+    {
+      name: "url",
+      variable: url,
+      setAtt: setUrl
+    }
+  ]
+
   return (
     <div>
       {
@@ -69,6 +97,7 @@ const App = () => {
           : <>
             <h2>blogs</h2>
             <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
+            <BlogForm fields={fields} create={createBlog} />
             <Blogs blogs={blogs} />
           </>
       }
