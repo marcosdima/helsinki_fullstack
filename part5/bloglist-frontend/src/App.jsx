@@ -26,6 +26,13 @@ const App = () => {
     }
   }, [])
 
+  const logOut = () => {
+    setUser(null)
+    window.localStorage.clear()
+    setUsername('')
+    setPassword('')
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -46,18 +53,24 @@ const App = () => {
     }
   }
 
+  const login = () => <Login 
+    password={password}
+    username={username}
+    handleLogin={handleLogin}
+    setUsername={setUsername}
+    setPassword={setPassword}
+  />
+
   return (
     <div>
       {
         user === null
-          ? <Login 
-              password={password}
-              username={username}
-              handleLogin={handleLogin}
-              setUsername={setUsername}
-              setPassword={setPassword}
-            />
-          : <Blogs blogs={blogs} />
+          ? login()
+          : <>
+            <h2>blogs</h2>
+            <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
+            <Blogs blogs={blogs} />
+          </>
       }
     </div>
   )
