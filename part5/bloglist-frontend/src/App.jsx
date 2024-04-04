@@ -46,10 +46,16 @@ const App = () => {
     setPassword('')
   }
 
-  const createBlog = () => { 
+  const createBlog = async () => { 
     const blog = { title, author, url }
-    blogService.create(blog)
-    setBlogs(blogs.concat(blog))
+    try {
+      const blogAdded = await blogService.create(blog)
+      console.log(blogAdded)
+      setBlogs(blogs.concat(blogAdded))
+      handleNotificationMessage(`a new blog: ${title} by ${author}`)
+    } catch(exception) {
+      handleNotificationMessage('Error at blog creation', true)
+    }
   }
 
   const handleLogin = async (event) => {
@@ -67,6 +73,7 @@ const App = () => {
       setUser(userLogin)
       setUsername('')
       setPassword('')
+      handleNotificationMessage('User logged!')
     } catch (exception) {
       console.log("Error at login")
       handleNotificationMessage('Wrong credentials', true)
@@ -77,8 +84,8 @@ const App = () => {
     if (isAnError) setErrorFlag(true)
     else setErrorFlag(false)
 
-    setNotificationMessage(message)
-    setTimeout(() => setNotificationMessage(null), notificationTime)
+    setNotification(message)
+    setTimeout(() => setNotification(null), notificationTime)
   }
 
   const login = () => <>
