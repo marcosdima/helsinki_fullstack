@@ -9,10 +9,7 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  // Create blog...
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
   // Notification...
   const [notification, setNotification] = useState(null)
   const [errorFlag, setErrorFlag] = useState(false)
@@ -41,13 +38,11 @@ const App = () => {
     window.localStorage.clear()
   }
 
-  const createBlog = async () => { 
-    const blog = { title, author, url }
+  const createBlog = async (blog) => {
     try {
       const blogAdded = await blogService.create(blog)
-      console.log(blogAdded)
       setBlogs(blogs.concat(blogAdded))
-      handleNotificationMessage(`a new blog: ${title} by ${author}`)
+      handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
     } catch(exception) {
       handleNotificationMessage('Error at blog creation', true)
     }
@@ -86,24 +81,6 @@ const App = () => {
     <Login handleLogin={handleLogin} />
   </>
 
-  const fields = [
-    {
-      name: "title",
-      variable: title,
-      setAtt: setTitle
-    },
-    {
-      name: "author",
-      variable: author,
-      setAtt: setAuthor
-    },
-    {
-      name: "url",
-      variable: url,
-      setAtt: setUrl
-    }
-  ]
-
   return (
     <div>
       {
@@ -113,7 +90,7 @@ const App = () => {
             <h2>blogs</h2>
             <Notification message={notification} isAnError={errorFlag}/>
             <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
-            <BlogForm fields={fields} create={createBlog} />
+            <BlogForm create={createBlog} />
             <Blogs blogs={blogs} />
           </>
       }
