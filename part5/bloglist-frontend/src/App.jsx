@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
@@ -10,7 +10,8 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-
+  const blogFormRef = useRef()
+  
   // Notification...
   const [notification, setNotification] = useState(null)
   const [errorFlag, setErrorFlag] = useState(false)
@@ -44,6 +45,7 @@ const App = () => {
       const blogAdded = await blogService.create(blog)
       setBlogs(blogs.concat(blogAdded))
       handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
+      blogFormRef.current.toggleVisibility()
     } catch(exception) {
       handleNotificationMessage('Error at blog creation', true)
     }
@@ -91,7 +93,9 @@ const App = () => {
             <h2>blogs</h2>
             <Notification message={notification} isAnError={errorFlag}/>
             <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
-            <Togglable buttonLabel={"New Blog"} ><BlogForm create={createBlog} /></Togglable>
+            <Togglable buttonLabel={"New Blog"} ref={blogFormRef}>
+              <BlogForm create={createBlog} />
+            </Togglable>
             <Blogs blogs={blogs} />
           </>
       }
