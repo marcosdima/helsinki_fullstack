@@ -1,7 +1,7 @@
 import Togglable from "./Togglable"
 import { useState } from "react"
 
-const Blog = ({ blog, like }) => {
+const Blog = ({ blog, like, deleteThis, ownsThisBlog }) => {
   const [display, setDisplay] = useState('flex')
 
   const { title, author, url, likes } = blog
@@ -13,7 +13,9 @@ const Blog = ({ blog, like }) => {
     width: 'fit-content',
     display
   }
-
+  const deleteStlyle = {
+    display: ownsThisBlog ? "" : "none"
+  }
   const handleDisplay = () => {
     setDisplay(
       display === 'flex'
@@ -29,6 +31,7 @@ const Blog = ({ blog, like }) => {
         <div>{ url }</div>
         <div>likes { likes } <button onClick={like}>like</button></div>
         <div>{ author }</div>
+        <button onClick={() => deleteThis(blog.id)} style={deleteStlyle}>remove</button>
       </Togglable>
     </span>
   )

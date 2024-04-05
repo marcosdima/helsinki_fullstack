@@ -114,7 +114,12 @@ const App = () => {
             <Togglable buttonLabel={"New Blog"} ref={blogFormRef}>
               <BlogForm create={createBlog} />
             </Togglable>
-            <Blogs blogs={blogs.sort((a,b) => b.likes - a.likes)} like={likeBlog} />
+            <Blogs 
+              blogs={blogs.sort((a,b) => b.likes - a.likes)} 
+              like={likeBlog} 
+              deleteThis={() => {}}
+              user={user}
+              />
           </>
       }
     </div>
