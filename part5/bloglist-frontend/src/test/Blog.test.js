@@ -7,8 +7,14 @@ import helper from './test_helper'
 
 describe('Blog Component Test', () => {
     let container
+    let user
+    let mockHandler
     
-    beforeEach(() => container = render(<Blog blog={helper.example_blog()} />).container)
+    beforeEach(() => {
+        container = render(<Blog blog={helper.example_blog()} />).container
+        user = userEvent.setup()
+        mockHandler = jest.fn()
+    })
 
     test('at the begining show title...', () => {
         const title = screen.getByText('A test blog')
@@ -18,12 +24,25 @@ describe('Blog Component Test', () => {
         const body_of_blog = container.querySelector('.toggle-on')
         expect(body_of_blog).toHaveStyle('display: none')
     })
-    test('unless you click DA button...', async () => {
-        const user = userEvent.setup()
+    test('unless you click DA button', async () => {
         const DA_button = screen.getByText('view')
         const body_of_blog = container.querySelector('.toggle-on')
         await user.click(DA_button)
 
         expect(body_of_blog).not.toHaveStyle('display: none')
+    })
+    test('ah, two clicks to like!', async () => {
+        const like_button = screen.getByText('like')
+        
+        // I couldn't make it work without this .
+        like_button.addEventListener('click', mockHandler);
+
+        await user.click(like_button)
+        
+        expect(mockHandler).toHaveBeenCalledTimes(1);
+
+        await user.click(like_button)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
     })
 })
