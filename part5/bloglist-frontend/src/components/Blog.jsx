@@ -1,5 +1,5 @@
-import Togglable from "./Togglable"
-import { useState } from "react"
+import Togglable from './Togglable'
+import { useState } from 'react'
 
 const Blog = ({ blog, like, deleteThis, ownsThisBlog }) => {
   const [display, setDisplay] = useState('flex')
@@ -14,20 +14,20 @@ const Blog = ({ blog, like, deleteThis, ownsThisBlog }) => {
     display
   }
   const deleteStlyle = {
-    display: ownsThisBlog ? "" : "none"
+    display: ownsThisBlog ? '' : 'none'
   }
   const handleDisplay = () => {
     setDisplay(
       display === 'flex'
-      ? 'grid'
-      : 'flex'
+        ? 'grid'
+        : 'flex'
     )
   }
 
   return (
-    <span style={blogStyle}> 
+    <span style={blogStyle}>
       { title }
-      <Togglable buttonLabel={"view"} onClick={handleDisplay}>
+      <Togglable buttonLabel={'view'} onClick={handleDisplay}>
         <div>{ url }</div>
         <div>likes { likes } <button onClick={like}>like</button></div>
         <div>{ author }</div>

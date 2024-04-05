@@ -11,7 +11,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
-  
+
   // Notification...
   const [notification, setNotification] = useState(null)
   const [errorFlag, setErrorFlag] = useState(false)
@@ -73,14 +73,14 @@ const App = () => {
   const deleteBlog = async blogId => {
     const blog = blogs.find(blog => blog.id === blogId)
     if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
-    
+
     try {
       await blogService.remove(blogId)
       handleNotificationMessage(`${blog.title} deleted!`)
       setBlogs(blogs.filter(blogMapped => blogMapped.id !== blogId))
     } catch (exception) {
       handleNotificationMessage(`${blog.title} couldn't be deleted... :(`, true)
-    } 
+    }
   }
 
   const handleLogin = async ({ username, password }) => {
@@ -91,13 +91,13 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogappUser',
         JSON.stringify(userLogin)
-      ) 
+      )
 
       blogService.setToken(userLogin.token)
       setUser(userLogin)
       handleNotificationMessage('User logged!')
     } catch (exception) {
-      console.log("Error at login")
+      console.log('Error at login')
       handleNotificationMessage('Wrong credentials', true)
     }
   }
@@ -125,19 +125,21 @@ const App = () => {
             <h2>blogs</h2>
             <Notification message={notification} isAnError={errorFlag}/>
             <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
-            <Togglable buttonLabel={"New Blog"} ref={blogFormRef}>
+            <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
               <BlogForm create={createBlog} />
             </Togglable>
-            <Blogs 
-              blogs={blogs.sort((a,b) => b.likes - a.likes)} 
-              like={likeBlog} 
+            <Blogs
+              blogs={blogs.sort((a,b) => b.likes - a.likes)}
+              like={likeBlog}
               deleteThis={deleteBlog}
               user={user}
-              />
+            />
           </>
       }
     </div>
   )
 }
+
+App.displayName = 'App'
 
 export default App
