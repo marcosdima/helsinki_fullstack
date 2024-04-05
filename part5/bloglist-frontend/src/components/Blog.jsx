@@ -1,7 +1,7 @@
 import Togglable from "./Togglable"
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, like }) => {
   const [display, setDisplay] = useState('flex')
 
   const { title, author, url, likes } = blog
@@ -27,7 +27,7 @@ const Blog = ({ blog }) => {
       { title }
       <Togglable buttonLabel={"view"} onClick={handleDisplay}>
         <div>{ url }</div>
-        <div>likes { likes } <button>like</button></div>
+        <div>likes { likes } <button onClick={like}>like</button></div>
         <div>{ author }</div>
       </Togglable>
     </span>

@@ -40,7 +40,7 @@ const App = () => {
     window.localStorage.clear()
   }
 
-  const createBlog = async (blog) => {
+  const createBlog = async blog => {
     try {
       const blogAdded = await blogService.create(blog)
       setBlogs(blogs.concat(blogAdded))
@@ -48,6 +48,22 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
     } catch(exception) {
       handleNotificationMessage('Error at blog creation', true)
+    }
+  }
+
+  const likeBlog = async blogId => {
+    const blog = blogs.find(blog => blog.id === blogId)
+    try {
+      const likedBlog = {
+        ...blog,
+        likes: blog.likes + 1,
+        user: blog.user.id
+      }
+      blogService.update(likedBlog)
+      handleNotificationMessage(`${likedBlog.title} liked!`)
+      setBlogs(blogs.map(blogMapped => blogMapped.id !== blogId ? blogMapped : likedBlog))
+    } catch (exception) {
+      handleNotificationMessage(`${likedBlog.title} couldn't be liked... :(`, true)
     }
   }
 
@@ -96,7 +112,7 @@ const App = () => {
             <Togglable buttonLabel={"New Blog"} ref={blogFormRef}>
               <BlogForm create={createBlog} />
             </Togglable>
-            <Blogs blogs={blogs} />
+            <Blogs blogs={blogs} like={likeBlog} />
           </>
       }
     </div>
