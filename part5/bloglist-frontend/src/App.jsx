@@ -17,14 +17,14 @@ const App = () => {
   const [errorFlag, setErrorFlag] = useState(false)
 
   // Time in miliseconds...
-  const notificationTime = 8000
+  const notificationTime = 4000
 
   useEffect(() => {
-    const handleSetBlogs = async () => {
+    const setter = async () => {
       const blogsRequest = await blogService.getAll()
       setBlogs(blogsRequest)
     }
-    handleSetBlogs()
+    setter()
   }, [])
 
   useEffect(() => {
@@ -53,17 +53,19 @@ const App = () => {
 
   const likeBlog = async blogId => {
     const blog = blogs.find(blog => blog.id === blogId)
+
     try {
       const likedBlog = {
         ...blog,
         likes: blog.likes + 1,
         user: blog.user.id
       }
-      blogService.update(likedBlog)
-      handleNotificationMessage(`${likedBlog.title} liked!`)
-      setBlogs(blogs.map(blogMapped => blogMapped.id !== blogId ? blogMapped : likedBlog))
+      const updatedBlog = await blogService.update(likedBlog)
+
+      handleNotificationMessage(`${updatedBlog.title} liked!`)
+      setBlogs(blogs.map(blogMapped => blogMapped.id !== blogId ? blogMapped : updatedBlog))
     } catch (exception) {
-      handleNotificationMessage(`${likedBlog.title} couldn't be liked... :(`, true)
+      handleNotificationMessage(`${blog.title} couldn't be liked... :(`, true)
     }
   }
 
@@ -112,7 +114,7 @@ const App = () => {
             <Togglable buttonLabel={"New Blog"} ref={blogFormRef}>
               <BlogForm create={createBlog} />
             </Togglable>
-            <Blogs blogs={blogs} like={likeBlog} />
+            <Blogs blogs={blogs.sort((a,b) => b.likes - a.likes)} like={likeBlog} />
           </>
       }
     </div>
