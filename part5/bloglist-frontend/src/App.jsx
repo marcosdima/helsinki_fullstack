@@ -43,6 +43,7 @@ const App = () => {
   const createBlog = async blog => {
     try {
       const blogAdded = await blogService.create(blog)
+      console.log(blogAdded)
       setBlogs(blogs.concat(blogAdded))
       handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
       blogFormRef.current.toggleVisibility()
@@ -67,6 +68,17 @@ const App = () => {
     } catch (exception) {
       handleNotificationMessage(`${blog.title} couldn't be liked... :(`, true)
     }
+  }
+
+  const deleteBlog = async blogId => {
+    const blog = blogs.find(blog => blog.id === blogId)
+    try {
+      await blogService.remove(blogId)
+      handleNotificationMessage(`${blog.title} deleted!`)
+      setBlogs(blogs.filter(blogMapped => blogMapped.id !== blogId))
+    } catch (exception) {
+      handleNotificationMessage(`${blog.title} couldn't be deleted... :(`, true)
+    } 
   }
 
   const handleLogin = async ({ username, password }) => {
@@ -117,7 +129,7 @@ const App = () => {
             <Blogs 
               blogs={blogs.sort((a,b) => b.likes - a.likes)} 
               like={likeBlog} 
-              deleteThis={() => {}}
+              deleteThis={deleteBlog}
               user={user}
               />
           </>

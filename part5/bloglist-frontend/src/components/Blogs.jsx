@@ -8,7 +8,7 @@ const Blogs = ({ blogs, like, deleteThis, user }) => {
                 key={blog.id} 
                 blog={blog} 
                 like={() => like(blog.id)}
-                deleteThis={deleteThis}
+                deleteThis={() => deleteThis(blog.id)}
                 ownsThisBlog={user.name === blog.user.name} />
             )}
         </>
