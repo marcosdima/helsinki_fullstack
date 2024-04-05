@@ -3,19 +3,19 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from '../components/Blog'
+import BlogForm from '../components/BlogForm'
 import helper from './test_helper'
 
 describe('Blog Component Test', () => {
     let container
     let user
     let mockHandler
-    
-    beforeEach(() => {
-        container = render(<Blog blog={helper.example_blog()} />).container
-        user = userEvent.setup()
-        mockHandler = jest.fn()
-    })
 
+    beforeEach(() => {
+        mockHandler = jest.fn()
+        container = render(<Blog blog={helper.example_blog()} like={mockHandler} />).container
+        user = userEvent.setup()
+    }) 
     test('at the begining show title...', () => {
         const title = screen.getByText('A test blog')
         expect(title).toBeDefined()
@@ -33,9 +33,6 @@ describe('Blog Component Test', () => {
     })
     test('ah, two clicks to like!', async () => {
         const like_button = screen.getByText('like')
-        
-        // I couldn't make it work without this .
-        like_button.addEventListener('click', mockHandler);
 
         await user.click(like_button)
         
@@ -44,5 +41,38 @@ describe('Blog Component Test', () => {
         await user.click(like_button)
 
         expect(mockHandler.mock.calls).toHaveLength(2)
+    })
+})
+
+describe('Blog Form test', () => {
+    let container
+    let user
+    let createBlog
+
+    beforeEach(() => {
+        createBlog = jest.fn()
+        container = render(<BlogForm create={createBlog} />).container
+        user = userEvent.setup()
+    }) 
+    test('Adding a new Blog', async () => {
+        const input_title = screen.getByPlaceholderText('Enter a title...')
+        const input_author = screen.getByPlaceholderText('Enter a author...')
+        const input_url = screen.getByPlaceholderText('Enter a url...')
+        const sendButton = screen.getByText('create')
+
+        const title = 'testing a form author...'
+        const author = 'testing a form title...'
+        const url = 'testing a form url...'
+
+        await user.type(input_title, title);
+        await user.type(input_author, author);
+        await user.type(input_url, url);
+        await user.click(sendButton)
+
+        expect(createBlog.mock.calls).toHaveLength(1)
+        const form = createBlog.mock.calls[0][0]
+        expect(form.title).toBe(title)
+        expect(form.author).toBe(author)
+        expect(form.url).toBe(url)
     })
 })

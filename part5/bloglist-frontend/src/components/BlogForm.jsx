@@ -13,17 +13,20 @@ const BlogForm = ({ create }) => {
     {
       name: 'title',
       variable: title,
-      setAtt: setTitle
+      setAtt: setTitle,
+      placeholder: 'Enter a title...'
     },
     {
       name: 'author',
       variable: author,
-      setAtt: setAuthor
+      setAtt: setAuthor,
+      placeholder: 'Enter a author...'
     },
     {
       name: 'url',
       variable: url,
-      setAtt: setUrl
+      setAtt: setUrl,
+      placeholder: 'Enter a url...'
     }
   ]
 
@@ -45,6 +48,7 @@ const BlogForm = ({ create }) => {
             <div key={field.name}>
               {field.name}: <input
                 value={field.variable}
+                placeholder={field.placeholder}
                 onChange={({ target }) => field.setAtt(target.value)}
               />
             </div>
