@@ -8,9 +8,6 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  // Login...
-  const [password, setPassword] = useState('')
-  const [username, setUsername] = useState('')
   const [user, setUser] = useState(null)
   // Create blog...
   const [title, setTitle] = useState('')
@@ -42,8 +39,6 @@ const App = () => {
   const logOut = () => {
     setUser(null)
     window.localStorage.clear()
-    setUsername('')
-    setPassword('')
   }
 
   const createBlog = async () => { 
@@ -58,8 +53,7 @@ const App = () => {
     }
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async ({ username, password }) => {
     try {
       const userLogin = await loginService.login({
         username, password,
@@ -71,8 +65,6 @@ const App = () => {
 
       blogService.setToken(userLogin.token)
       setUser(userLogin)
-      setUsername('')
-      setPassword('')
       handleNotificationMessage('User logged!')
     } catch (exception) {
       console.log("Error at login")
@@ -90,14 +82,8 @@ const App = () => {
 
   const login = () => <>
     <h2>log in to application</h2>
-    <Notification message={notification} isAnError={errorFlag}/>
-    <Login 
-      password={password}
-      username={username}
-      handleLogin={handleLogin}
-      setUsername={setUsername}
-      setPassword={setPassword}
-    />
+    <Notification message={notification} isAnError={errorFlag} />
+    <Login handleLogin={handleLogin} />
   </>
 
   const fields = [
