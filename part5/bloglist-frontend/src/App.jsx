@@ -72,6 +72,8 @@ const App = () => {
 
   const deleteBlog = async blogId => {
     const blog = blogs.find(blog => blog.id === blogId)
+    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
+    
     try {
       await blogService.remove(blogId)
       handleNotificationMessage(`${blog.title} deleted!`)
