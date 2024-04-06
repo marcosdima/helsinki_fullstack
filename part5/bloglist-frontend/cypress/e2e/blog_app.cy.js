@@ -34,15 +34,15 @@ describe('Blog app', function() {
     }) 
     
     describe('When logged in', function() {
+      let title = 'A new blog begins'
+      let author = 'J. K. Ndeah'
+      let url = 'test.com'
+
       beforeEach(function() {
         cy.login({ username, password })
       })
   
       it('A blog can be created', function() {
-        const title = 'A new blog begins'
-        const author = 'J. K. Ndeah'
-        const url = 'test.com'
-
         cy.contains('New Blog').click()
         cy.get('#title').type(title)
         cy.get('#author').type(author)
@@ -51,6 +51,56 @@ describe('Blog app', function() {
 
         cy.contains(`a new blog: ${title} by ${author}`)
         cy.get('#blogs').contains(title)
+      })
+
+      describe('And when it\'s created...', function() {
+        beforeEach(function() {
+          cy.createBlog({ title, author, url })
+          // Shows the content...
+          cy.contains(title)
+            .contains('view')
+            .click()
+        })
+        it('can be displayed...', function() {
+          cy.contains(url)
+          cy.contains(author)
+          cy.contains('likes 0')
+        })
+        it('liked...', function() {
+          // Like the blog...
+          cy.contains('likes 0')
+            .find('button')
+            .should('contain', 'like')
+            .click()
+
+          cy.contains(title)
+            .parent()
+            .contains('likes 1')
+        })
+        it('and removed.', function() {
+          // Delete the blog...
+          cy.contains(title)
+            .parent()
+            .contains('remove')
+            .click()
+          cy.contains(`${title} deleted!`)
+        })
+        it.only('But only can be removed if it\'s owner ot the blog.', function () {
+          cy.contains('logout').click()
+          const anotherUser = 'another user'
+          const anotherPassword = 'another password'
+          cy.addUser({
+            username: anotherUser,
+            name:anotherUser,
+            password: anotherPassword
+          })
+          cy.login({ username: anotherUser, password:anotherPassword})
+          // Shows the content...
+          cy.contains(title)
+            .contains('view')
+            .click()
+          cy.contains('remove').should('not.visible')
+        })
       })
     })
   })
