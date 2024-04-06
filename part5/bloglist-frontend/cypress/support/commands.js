@@ -18,4 +18,4 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
     })
   
     cy.visit('')
-  })
+})
