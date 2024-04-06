@@ -48,13 +48,14 @@ const BlogForm = ({ create }) => {
             <div key={field.name}>
               {field.name}: <input
                 value={field.variable}
+                id={field.name}
                 placeholder={field.placeholder}
                 onChange={({ target }) => field.setAtt(target.value)}
               />
             </div>
           )
         }
-        <button type="submit">create</button>
+        <button type="submit" id='createButton'>create</button>
       </form>
     </div>
   )

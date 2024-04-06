@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Blogs = ({ blogs, like, deleteThis, user }) => {
   return (
-    <>
+    <div id='blogs'>
       {blogs.map(blog =>
         <Blog
           key={blog.id}
@@ -12,7 +12,7 @@ const Blogs = ({ blogs, like, deleteThis, user }) => {
           deleteThis={() => deleteThis(blog.id)}
           ownsThisBlog={user.name === blog.user.name} />
       )}
-    </>
+    </div>
   )
 }
 
