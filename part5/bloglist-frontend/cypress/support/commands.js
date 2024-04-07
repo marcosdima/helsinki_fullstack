@@ -26,3 +26,16 @@ Cypress.Commands.add('createBlog', ({ title, author, url }) => {
       }
     }).then(() => cy.visit(''))
 })
+
+Cypress.Commands.add('createBlogs', (blogs) => {
+  for (let blog of blogs) {
+    cy.request({
+      url: `${Cypress.env('BACKEND')}/blogs`,
+      method: 'POST',
+      body: blog,
+      headers: {
+        'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
+      }
+    })
+  }
+})

@@ -31,11 +31,11 @@ describe('Blog app', function() {
       cy.get('#password').type('not a password')
       cy.get('#loginButton').click()
       cy.contains('logged in').should('not.exist')
-    }) 
+    })
     
     describe('When logged in', function() {
       let title = 'A new blog begins'
-      let author = 'J. K. Ndeah'
+      let author = 'M. D. Brambilla'
       let url = 'test.com'
 
       beforeEach(function() {
@@ -85,7 +85,7 @@ describe('Blog app', function() {
             .click()
           cy.contains(`${title} deleted!`)
         })
-        it.only('But only can be removed if it\'s owner ot the blog.', function () {
+        it('But only can be removed if it\'s owner ot the blog.', function () {
           cy.contains('logout').click()
           const anotherUser = 'another user'
           const anotherPassword = 'another password'
@@ -100,6 +100,22 @@ describe('Blog app', function() {
             .contains('view')
             .click()
           cy.contains('remove').should('not.visible')
+        })
+      })
+
+      describe('When several blogs are created....', function() {
+        beforeEach(function() {
+          const blog_one = { title: 'The title with the most likes', author, url, likes: 10}
+          const blog_two = { title: 'The second title with the most likes', author, url, likes: 1}
+          const blog_three = { title: '0 likes', author, url}
+
+          cy.createBlogs([blog_one, blog_two, blog_three])
+            .then(() => cy.visit(''))
+        })
+        it.only('should show it in order of likes from', function() {            
+          cy.get('.blog').eq(0).contains('The title with the most likes')
+          cy.get('.blog').eq(1).contains('The second title with the most likes')
+          cy.get('.blog').eq(2).contains('0 likes')
         })
       })
     })

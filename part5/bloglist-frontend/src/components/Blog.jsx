@@ -25,7 +25,7 @@ const Blog = ({ blog, like, deleteThis, ownsThisBlog }) => {
   }
 
   return (
-    <span style={blogStyle}>
+    <span style={blogStyle} className='blog'>
       { title }
       <Togglable buttonLabel={'view'} onClick={handleDisplay} >
         <div>{ url }</div>
