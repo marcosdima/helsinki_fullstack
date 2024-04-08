@@ -1,3 +1,5 @@
+import { createSlice } from "@reduxjs/toolkit"
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -6,9 +8,7 @@ const anecdotesAtStart = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
-
 const getId = () => (100000 * Math.random()).toFixed(0)
-
 const asObject = (anecdote) => {
   return {
     content: anecdote,
@@ -16,54 +16,30 @@ const asObject = (anecdote) => {
     votes: 0
   }
 }
-
 const initialState = anecdotesAtStart.map(asObject)
 
-export const example = () => anecdotesAtStart.map(asObject)
+const asc = (a, b) => b.votes - a.votes
 
-
-// Create actions...
-export const voteAnecdote = (id) => {
-  return {
-    type: 'VOTE',
-    payload: { id }
-  }
-}
-
-export const createAnecdote = (anecdote) => {
-  return {
-    type: 'CREATE',
-    payload: { anecdote:  asObject(anecdote) }
-  }
-}
-
-export const setReset = () => {
-  return { type: 'RESET' }
-}
-
-// Reducer...
-const reducer = (state = initialState, action) => {
-  console.log('action', action)
-  let auxState
-
-  switch(action.type) {
-    case 'VOTE': {
-      auxState = state.map(anecdote => 
-          anecdote.id !== action.payload.id 
-          ? anecdote 
-          : { ...anecdote, votes: anecdote.votes + 1}
+const anecdoteSlice = createSlice({
+  name: 'anecdote',
+  initialState,
+  reducers: {
+    createAnecdote(state, action) {
+      return state.concat(asObject(action.payload)).sort(asc)
+    },
+    voteAnecdote(state, action) {
+      let auxState = state.map(anecdote => 
+        anecdote.id !== action.payload 
+        ? anecdote 
+        : { ...anecdote, votes: anecdote.votes + 1}
       )
-      break
+      return auxState.sort(asc)
+    },
+    reset(state, action) {
+      return []
     }
-    case 'CREATE': {
-      auxState = state.concat(action.payload.anecdote)
-      break
-    }
-    case 'RESET': return []
   }
-  
-  return auxState?.sort((a, b) => b.votes - a.votes) ?? state
+})
 
-}
-
-export default reducer
+export const { reset, createAnecdote, voteAnecdote } = anecdoteSlice.actions
+export default anecdoteSlice.reducer

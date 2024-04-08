@@ -1,6 +1,5 @@
 import deepFreeze from 'deep-freeze'
-import anecdoteReducer from '../reducers/anecdoteReducer'
-import { voteAnecdote, createAnecdote, setReset } from '../reducers/anecdoteReducer'
+import anecdoteReducer, { voteAnecdote, createAnecdote, reset } from '../reducers/anecdoteReducer'
 import filterReducer, { changeFilter } from '../reducers/filterReducer'
 import { example } from './test_helper'
 
@@ -26,7 +25,7 @@ describe('Lets test the anecdotes!', () => {
     
     test('the anecdotes can be reseted', () => {
         const state = example()
-        const action = setReset()
+        const action = reset()
         deepFreeze(state)
         const result = anecdoteReducer(state, action)
         expect(result).toHaveLength(0)
@@ -45,7 +44,7 @@ describe('Lets test the anecdotes!', () => {
         result = anecdoteReducer(result, voteAnecdote(anecdote.id))
         result = anecdoteReducer(result, voteAnecdote(anecdote.id))
         result = anecdoteReducer(result, voteAnecdote(anecdote.id))
-        console.log(result)
+
         expect(result[0].id).toBe(anecdote.id)
         expect(result[0].votes).toBe(3)
     })
