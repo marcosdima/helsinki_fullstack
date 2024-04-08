@@ -1,6 +1,8 @@
 import deepFreeze from 'deep-freeze'
 import anecdoteReducer from '../reducers/anecdoteReducer'
-import { example, voteAnecdote, createAnecdote, setReset } from '../reducers/anecdoteReducer'
+import { voteAnecdote, createAnecdote, setReset } from '../reducers/anecdoteReducer'
+import filterReducer, { changeFilter } from '../reducers/filterReducer'
+import { example } from './test_helper'
 
 describe('Lets test the anecdotes!', () => {
     test('you can vote an anecdote', () => {
@@ -49,3 +51,14 @@ describe('Lets test the anecdotes!', () => {
     })
 })
 
+describe('Lets test the filters!', () => { 
+    test('can be changed', () => {
+        const filter = ''
+        const newFilter = 'Now has to be THIS'
+
+        deepFreeze(filter)
+        const res = filterReducer(filter, changeFilter(newFilter))
+
+        expect(res).toBe('Now has to be THIS')
+    })
+ })
