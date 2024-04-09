@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import anecdoteServices from '../services/anecdoteService'
+import anecdoteService from "../services/anecdoteService"
 
 const asc = (a, b) => b.votes - a.votes
 
@@ -12,9 +12,9 @@ const anecdoteSlice = createSlice({
     },
     voteAnecdote(state, action) {
       let auxState = state.map(anecdote => 
-        anecdote.id !== action.payload 
+        anecdote.id !== action.payload.id
         ? anecdote 
-        : { ...anecdote, votes: anecdote.votes + 1}
+        : action.payload 
       )
       return auxState.sort(asc)
     },
@@ -31,14 +31,21 @@ export const { setAnecdotes, reset, voteAnecdote, appendAnecdote } = anecdoteSli
 
 export const createAnecdote = content => {
   return async dispatch => {
-    const anecdote = await anecdoteServices.create(content)
+    const anecdote = await anecdoteService.create(content)
     dispatch(appendAnecdote(anecdote))
   }
 }
 export const initialAnecdotes = () => {
   return async dispatch => {
-    const anecdotes = await anecdoteServices.getAll()
+    const anecdotes = await anecdoteService.getAll()
     dispatch(setAnecdotes(anecdotes))
+  }
+}
+export const vote = anecdote => {
+  return async dispatch => {
+    const anecdoteMod =  { ...anecdote, votes: anecdote.votes + 1}
+    const anecdoteVoted = await anecdoteService.update(anecdoteMod)
+    dispatch(voteAnecdote(anecdoteVoted))
   }
 }
 
