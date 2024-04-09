@@ -9,3 +9,6 @@ export const createAnecdote = newAnecdote => {
         return Promise.reject(new Error('El contenido de la anécdota debe tener al menos 5 caracteres.'))
     return axios.post(baseUrl, newAnecdote).then(res => res.data)
 }
+
+export const updateAnecdote = anecdote => 
+    axios.put(`${baseUrl}/${anecdote.id}`, anecdote).then(res => res.data)
