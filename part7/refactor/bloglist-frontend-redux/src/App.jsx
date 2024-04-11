@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { setNotification } from './reducers/notificationReducer'
+import { useSelector, useDispatch } from 'react-redux'
+
 import Login from './components/Login'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
@@ -12,12 +15,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
 
-  // Notification...
-  const [notification, setNotification] = useState(null)
-  const [errorFlag, setErrorFlag] = useState(false)
-
-  // Time in miliseconds...
-  const notificationTime = 4000
+  const notification = useSelector(state => state.notification)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const setter = async () => {
@@ -43,7 +42,6 @@ const App = () => {
   const createBlog = async blog => {
     try {
       const blogAdded = await blogService.create(blog)
-      console.log(blogAdded)
       setBlogs(blogs.concat(blogAdded))
       handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
       blogFormRef.current.toggleVisibility()
@@ -102,17 +100,11 @@ const App = () => {
     }
   }
 
-  const handleNotificationMessage = (message, isAnError) => {
-    if (isAnError) setErrorFlag(true)
-    else setErrorFlag(false)
-
-    setNotification(message)
-    setTimeout(() => setNotification(null), notificationTime)
-  }
+  const handleNotificationMessage = (message, isAnError=false) => dispatch(setNotification(message, isAnError, 3))
 
   const login = () => <>
     <h2>log in to application</h2>
-    <Notification message={notification} isAnError={errorFlag} />
+    <Notification { ...notification } />
     <Login handleLogin={handleLogin} />
   </>
 
@@ -123,7 +115,7 @@ const App = () => {
           ? login()
           : <>
             <h2>blogs</h2>
-            <Notification message={notification} isAnError={errorFlag}/>
+            <Notification { ...notification }/>
             <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
             <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
               <BlogForm create={createBlog} />
