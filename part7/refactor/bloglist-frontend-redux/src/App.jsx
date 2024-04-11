@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { setNotification } from './reducers/notificationReducer'
 import { initialBlogs, addBlog } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
@@ -9,13 +9,12 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
-import loginService from './services/login'
+import { reset, setUser } from './reducers/userReducer'
 
 const App = () => {
-  const [user, setUser] = useState(null)
   const blogFormRef = useRef()
-
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
 
   useEffect(() => {
     dispatch(initialBlogs())
@@ -24,15 +23,12 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
     if (loggedUserJSON) {
-      setUser(loggedUserJSON)
+      dispatch(setUser(loggedUserJSON))
       blogService.setToken(loggedUserJSON.token)
     }
   }, [])
 
-  const logOut = () => {
-    setUser(null)
-    window.localStorage.clear()
-  }
+  const logOut = () => dispatch(reset())
 
   const createBlog = async blog => {
     try {
@@ -44,6 +40,7 @@ const App = () => {
     }
   }
 
+  /*
   const handleLogin = async ({ username, password }) => {
     try {
       const userLogin = await loginService.login({
@@ -61,14 +58,14 @@ const App = () => {
       console.log('Error at login')
       handleNotificationMessage('Wrong credentials', true)
     }
-  }
+  }*/
 
   const handleNotificationMessage = (message, isAnError=false) => dispatch(setNotification(message, isAnError, 3))
 
   const login = () => <>
     <h2>log in to application</h2>
     <Notification />
-    <Login handleLogin={handleLogin} />
+    <Login />
   </>
 
   return (
