@@ -1,7 +1,7 @@
 import Blog from './Blog'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
-import { likeBlog } from '../reducers/blogReducer'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
 
 const Blogs = ({ deleteThis, user }) => {
   const dispatch = useDispatch()
@@ -13,7 +13,7 @@ const Blogs = ({ deleteThis, user }) => {
           key={blog.id}
           blog={blog}
           like={() => dispatch(likeBlog(blog))}
-          deleteThis={() => deleteThis(blog.id)}
+          deleteThis={() => dispatch(removeBlog(blog))}
           ownsThisBlog={user.name === blog.user.name} />
       )}
     </div>
@@ -23,7 +23,6 @@ const Blogs = ({ deleteThis, user }) => {
 Blogs.displayName = 'Blogs'
 
 PropTypes.propTypes = {
-  deleteThis: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
 }
 

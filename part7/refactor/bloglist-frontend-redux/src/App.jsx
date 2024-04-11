@@ -44,21 +44,6 @@ const App = () => {
     }
   }
 
-  const deleteBlog = async blogId => {
-    /*
-    const blog = blogs.find(blog => blog.id === blogId)
-    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
-
-    try {
-      await blogService.remove(blogId)
-      handleNotificationMessage(`${blog.title} deleted!`)
-      setBlogs(blogs.filter(blogMapped => blogMapped.id !== blogId))
-    } catch (exception) {
-      handleNotificationMessage(`${blog.title} couldn't be deleted... :(`, true)
-    }*/
-    console.log("Delete!")
-  }
-
   const handleLogin = async ({ username, password }) => {
     try {
       const userLogin = await loginService.login({
@@ -98,10 +83,7 @@ const App = () => {
             <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
               <BlogForm create={createBlog} />
             </Togglable>
-            <Blogs
-              deleteThis={deleteBlog}
-              user={user}
-            />
+            <Blogs user={user}/>
           </>
       }
     </div>
