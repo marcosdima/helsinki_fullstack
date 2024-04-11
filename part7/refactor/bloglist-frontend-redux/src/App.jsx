@@ -29,8 +29,6 @@ const App = () => {
     }
   }, [])
 
-  const notification = useSelector(state => state.notification)
-
   const logOut = () => {
     setUser(null)
     window.localStorage.clear()
@@ -44,25 +42,6 @@ const App = () => {
     } catch(exception) {
       handleNotificationMessage('Error at blog creation', true)
     }
-  }
-
-  const likeBlog = async blogId => {
-    /*const blog = blogs.find(blog => blog.id === blogId)
-
-    try {
-      const likedBlog = {
-        ...blog,
-        likes: blog.likes + 1,
-        user: blog.user.id
-      }
-      const updatedBlog = await blogService.update(likedBlog)
-
-      handleNotificationMessage(`${updatedBlog.title} liked!`)
-      setBlogs(blogs.map(blogMapped => blogMapped.id !== blogId ? blogMapped : updatedBlog))
-    } catch (exception) {
-      handleNotificationMessage(`${blog.title} couldn't be liked... :(`, true)
-    }*/
-    console.log("Like!")
   }
 
   const deleteBlog = async blogId => {
@@ -120,7 +99,6 @@ const App = () => {
               <BlogForm create={createBlog} />
             </Togglable>
             <Blogs
-              like={likeBlog}
               deleteThis={deleteBlog}
               user={user}
             />
