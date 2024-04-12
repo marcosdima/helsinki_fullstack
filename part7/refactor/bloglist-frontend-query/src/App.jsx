@@ -6,18 +6,13 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useNotificationDispatch, messageAction } from './contexts/NotificationContext';
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
-
-  // Notification...
-  const [notification, setNotification] = useState(null)
-  const [errorFlag, setErrorFlag] = useState(false)
-
-  // Time in miliseconds...
-  const notificationTime = 4000
+  const notificationDispatcher = useNotificationDispatch()
 
   useEffect(() => {
     const setter = async () => {
@@ -102,17 +97,12 @@ const App = () => {
     }
   }
 
-  const handleNotificationMessage = (message, isAnError) => {
-    if (isAnError) setErrorFlag(true)
-    else setErrorFlag(false)
-
-    setNotification(message)
-    setTimeout(() => setNotification(null), notificationTime)
-  }
+  const handleNotificationMessage = (message, isAnError=false) =>
+    notificationDispatcher(messageAction({ message, isAnError }))
 
   const login = () => <>
     <h2>log in to application</h2>
-    <Notification message={notification} isAnError={errorFlag} />
+    <Notification />
     <Login handleLogin={handleLogin} />
   </>
 
@@ -123,7 +113,7 @@ const App = () => {
           ? login()
           : <>
             <h2>blogs</h2>
-            <Notification message={notification} isAnError={errorFlag}/>
+            <Notification />
             <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
             <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
               <BlogForm create={createBlog} />
