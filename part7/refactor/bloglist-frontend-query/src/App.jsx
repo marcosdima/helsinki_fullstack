@@ -6,12 +6,12 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { useNotificationDispatch, messageAction } from './contexts/NotificationContext';
+import { useNotification  } from './contexts/NotificationContext';
 
 const App = () => {
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
-  const notificationDispatcher = useNotificationDispatch()
+  const setNotification = useNotification()
   
   useEffect(() => {
     const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
@@ -89,7 +89,7 @@ const App = () => {
   }
 
   const handleNotificationMessage = (message, isAnError=false) =>
-    notificationDispatcher(messageAction({ message, isAnError }))
+    setNotification(message, isAnError)
 
   const login = () => <>
     <h2>log in to application</h2>
@@ -111,7 +111,6 @@ const App = () => {
             </Togglable>
             <Blogs
               //blogs={blogs.sort((a,b) => b.likes - a.likes)}
-              deleteThis={deleteBlog}
               user={user}
             />
           </>

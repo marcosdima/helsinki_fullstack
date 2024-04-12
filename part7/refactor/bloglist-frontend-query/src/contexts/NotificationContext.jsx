@@ -35,7 +35,20 @@ export const useNotificationDispatch = () => {
     return all[1]
 }
 
-export const messageAction = (payload) => {
+export const useNotification = () => {
+    const valueAndDispatch = useContext(NotificationContext)
+    const dispatch = valueAndDispatch[1]
+
+    return (message, isAnError=false) => {
+        const action = messageAction({ message, isAnError })
+        dispatch(action)
+        setTimeout(() => {
+            dispatch({ type: 'RESET' })
+        }, 5000)
+    }
+}
+
+const messageAction = (payload) => {
     return {
         type: 'SET_MESSAGE',
         payload

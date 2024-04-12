@@ -2,11 +2,11 @@ import Blog from './Blog'
 import PropTypes from 'prop-types'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
-import { useNotificationDispatch } from '../contexts/NotificationContext'
+import { useNotification } from '../contexts/NotificationContext'
 
-const Blogs = ({ deleteThis, user }) => {
+const Blogs = ({ user }) => {
   const queryClient = useQueryClient()
-  const notificationDispatcher = useNotificationDispatch()
+  const setNotification = useNotification()
 
   // Mutations...
   const updateBlogMutation = useMutation({
@@ -18,6 +18,15 @@ const Blogs = ({ deleteThis, user }) => {
       ))
     }
   })
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.remove,
+    onSuccess: (deleteBlogId) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      const blog = blogs.find(blog => blog.id = deleteBlogId)
+      queryClient.setQueryData(['blogs'], blogs.filter(blog => blog.id !== deleteBlogId))
+      
+    }
+  })
 
   // Handlers...
   const handleLike = (blog) => {
@@ -26,7 +35,11 @@ const Blogs = ({ deleteThis, user }) => {
       likes: blog.likes + 1 ,
       user: blog.user.id
     })
-    notificationDispatcher(`You voted '${blog.title}'`)
+    setNotification(`You liked '${blog.title}'!`)
+  }
+  const handleDelete = (blog) => {
+    deleteBlogMutation.mutate(blog.id)
+    setNotification(`You deleted '${blog.title}'!`)
   }
 
   // Blogs...
@@ -49,7 +62,7 @@ const Blogs = ({ deleteThis, user }) => {
           key={blog.id}
           blog={blog}
           like={() => handleLike(blog)}
-          deleteThis={() => deleteThis(blog.id)}
+          deleteThis={() => handleDelete(blog)}
           ownsThisBlog={user.name === blog.user.name} />
       )}
     </div>
@@ -59,8 +72,6 @@ const Blogs = ({ deleteThis, user }) => {
 Blogs.displayName = 'Blogs'
 
 PropTypes.propTypes = {
-  like: PropTypes.func.isRequired,
-  deleteThis: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
 }
 

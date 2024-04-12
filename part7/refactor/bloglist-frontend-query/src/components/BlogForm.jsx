@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { useNotificationDispatch } from '../contexts/NotificationContext'
+import { useNotification } from '../contexts/NotificationContext'
 
 const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const setNotification = useNotification()
 
   const queryClient = useQueryClient()
-  const notificationDispatcher = useNotificationDispatch()
+
   const createBlogMutation = useMutation({
     mutationFn: blogService.create,
     onSuccess: (newBlog) => {
@@ -46,7 +47,7 @@ const BlogForm = () => {
   const createBlog = (event) => {
     event.preventDefault()
     createBlogMutation.mutate({ title, author, url })
-    notificationDispatcher(`You created '${title}'`)
+    setNotification(`You created '${title}'`)
     setTitle('')
     setAuthor('')
     setUrl('')
