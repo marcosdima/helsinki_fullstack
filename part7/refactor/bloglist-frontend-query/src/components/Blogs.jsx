@@ -1,7 +1,21 @@
 import Blog from './Blog'
 import PropTypes from 'prop-types'
+import { useQuery } from '@tanstack/react-query'
+import blogService from '../services/blogs'
 
-const Blogs = ({ blogs, like, deleteThis, user }) => {
+const Blogs = ({ like, deleteThis, user }) => {
+  const response = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll
+  })
+
+  if (response.isLoading) 
+    return <div>Loading...</div>
+  else if (response.isError) 
+    return <div>Blogs service not available due to problems in server</div>
+
+  const { data: blogs } = response
+
   return (
     <div id='blogs'>
       {blogs.map(blog =>
@@ -19,7 +33,6 @@ const Blogs = ({ blogs, like, deleteThis, user }) => {
 Blogs.displayName = 'Blogs'
 
 PropTypes.propTypes = {
-  blogs: PropTypes.array.isRequired,
   like: PropTypes.func.isRequired,
   deleteThis: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,

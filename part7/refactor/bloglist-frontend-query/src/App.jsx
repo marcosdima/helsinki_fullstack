@@ -9,19 +9,10 @@ import loginService from './services/login'
 import { useNotificationDispatch, messageAction } from './contexts/NotificationContext';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const blogFormRef = useRef()
   const notificationDispatcher = useNotificationDispatch()
-
-  useEffect(() => {
-    const setter = async () => {
-      const blogsRequest = await blogService.getAll()
-      setBlogs(blogsRequest)
-    }
-    setter()
-  }, [])
-
+  
   useEffect(() => {
     const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
     if (loggedUserJSON) {
@@ -36,7 +27,7 @@ const App = () => {
   }
 
   const createBlog = async blog => {
-    try {
+    /*try {
       const blogAdded = await blogService.create(blog)
       console.log(blogAdded)
       setBlogs(blogs.concat(blogAdded))
@@ -44,11 +35,11 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
     } catch(exception) {
       handleNotificationMessage('Error at blog creation', true)
-    }
+    }*/
   }
 
   const likeBlog = async blogId => {
-    const blog = blogs.find(blog => blog.id === blogId)
+    /*const blog = blogs.find(blog => blog.id === blogId)
 
     try {
       const likedBlog = {
@@ -62,11 +53,11 @@ const App = () => {
       setBlogs(blogs.map(blogMapped => blogMapped.id !== blogId ? blogMapped : updatedBlog))
     } catch (exception) {
       handleNotificationMessage(`${blog.title} couldn't be liked... :(`, true)
-    }
+    }*/
   }
 
   const deleteBlog = async blogId => {
-    const blog = blogs.find(blog => blog.id === blogId)
+    /*const blog = blogs.find(blog => blog.id === blogId)
     if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) return
 
     try {
@@ -75,7 +66,7 @@ const App = () => {
       setBlogs(blogs.filter(blogMapped => blogMapped.id !== blogId))
     } catch (exception) {
       handleNotificationMessage(`${blog.title} couldn't be deleted... :(`, true)
-    }
+    }*/
   }
 
   const handleLogin = async ({ username, password }) => {
@@ -119,7 +110,7 @@ const App = () => {
               <BlogForm create={createBlog} />
             </Togglable>
             <Blogs
-              blogs={blogs.sort((a,b) => b.likes - a.likes)}
+              //blogs={blogs.sort((a,b) => b.likes - a.likes)}
               like={likeBlog}
               deleteThis={deleteBlog}
               user={user}
