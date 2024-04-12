@@ -1,9 +1,35 @@
 import Blog from './Blog'
 import PropTypes from 'prop-types'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
+import { useNotificationDispatch } from '../contexts/NotificationContext'
 
-const Blogs = ({ like, deleteThis, user }) => {
+const Blogs = ({ deleteThis, user }) => {
+  const queryClient = useQueryClient()
+  const notificationDispatcher = useNotificationDispatch()
+
+  // Mutations...
+  const updateBlogMutation = useMutation({
+    mutationFn: blogService.update,
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.map(
+        blog => blog.id !== newBlog.id ? blog : newBlog
+      ))
+    }
+  })
+
+  // Handlers...
+  const handleLike = (blog) => {
+    updateBlogMutation.mutate({ 
+      ...blog, 
+      likes: blog.likes + 1 ,
+      user: blog.user.id
+    })
+    notificationDispatcher(`You voted '${blog.title}'`)
+  }
+
+  // Blogs...
   const response = useQuery({
     queryKey: ['blogs'],
     queryFn: blogService.getAll
@@ -22,7 +48,7 @@ const Blogs = ({ like, deleteThis, user }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          like={() => like(blog.id)}
+          like={() => handleLike(blog)}
           deleteThis={() => deleteThis(blog.id)}
           ownsThisBlog={user.name === blog.user.name} />
       )}
