@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { setNotification } from '../reducers/notificationReducer'
 import { addBlog } from '../reducers/blogReducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { createABlog } from '../reducers/usersReducer'
 
-const BlogForm = ({ create }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user)
 
   const blogFormStyle = {
     marginBottom: 20
@@ -41,6 +43,7 @@ const BlogForm = ({ create }) => {
 
     try {
       dispatch(addBlog(blog))
+      dispatch(createABlog({ user, blog }))
       handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
       setTitle('')
       setAuthor('')

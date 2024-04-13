@@ -9,7 +9,9 @@ import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
 import { reset } from './reducers/userReducer'
+import { initialUsers } from './reducers/usersReducer'
 
 import {
   BrowserRouter as Router,
@@ -23,6 +25,9 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initialBlogs())
+  }, [])
+  useEffect(() => {
+    dispatch(initialUsers())
   }, [])
 
   useEffect(() => {
@@ -67,7 +72,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={body()} />
         <Route path='/login' element={<Login />} />
-        <Route path="/users" element={user ? <div /> : <Navigate replace to="/login" />} />
+        <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
       </Routes>
     </Router>
   )
