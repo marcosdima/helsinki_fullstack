@@ -1,15 +1,20 @@
 import { useEffect, useRef } from 'react'
-import { setNotification } from './reducers/notificationReducer'
-import { initialBlogs, addBlog } from './reducers/blogReducer'
+import { initialBlogs } from './reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
+import { setUser } from './reducers/userReducer'
+import blogService from './services/blogs'
 
 import Login from './components/Login'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import { reset, setUser } from './reducers/userReducer'
+import { reset } from './reducers/userReducer'
+
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link, Navigate
+} from 'react-router-dom'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -30,60 +35,41 @@ const App = () => {
 
   const logOut = () => dispatch(reset())
 
-  const createBlog = async blog => {
-    try {
-      dispatch(addBlog(blog))
-      handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
-      blogFormRef.current.toggleVisibility()
-    } catch(exception) {
-      handleNotificationMessage('Error at blog creation', true)
-    }
-  }
+  const padding = { padding: 5 }
+  const margin = { margin: 10 }
 
-  /*
-  const handleLogin = async ({ username, password }) => {
-    try {
-      const userLogin = await loginService.login({
-        username, password,
-      })
-      window.localStorage.setItem(
-        'loggedBlogappUser',
-        JSON.stringify(userLogin)
-      )
-
-      blogService.setToken(userLogin.token)
-      setUser(userLogin)
-      handleNotificationMessage('User logged!')
-    } catch (exception) {
-      console.log('Error at login')
-      handleNotificationMessage('Wrong credentials', true)
-    }
-  }*/
-
-  const handleNotificationMessage = (message, isAnError=false) => dispatch(setNotification(message, isAnError, 3))
-
-  const login = () => <>
-    <h2>log in to application</h2>
-    <Notification />
-    <Login />
-  </>
+  const body = () => (
+    <div>
+      <div style={margin}>
+        <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
+                <BlogForm />
+        </Togglable>
+      </div>
+      <Blogs />
+    </div>
+  )
 
   return (
-    <div>
-      {
-        user === null
-          ? login()
-          : <>
-            <h2>blogs</h2>
-            <Notification />
-            <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
-            <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
-              <BlogForm create={createBlog} />
-            </Togglable>
-            <Blogs user={user}/>
-          </>
-      }
-    </div>
+    <Router>
+      <h1>Blogs App</h1>
+
+      <div>
+        <Link style={padding} to="/" >Blogs</Link>
+        <Link style={padding} to="/users" >Users</Link>
+        {user
+          ? <><em>{user.name} logged in</em> <button onClick={logOut} style={margin}>logout</button></>
+          : <Link style={padding} to="/login">login</Link>
+        }
+      </div>
+      
+      <Notification />
+
+      <Routes>
+        <Route path='/' element={body()} />
+        <Route path='/login' element={<Login />} />
+        <Route path="/users" element={user ? <div /> : <Navigate replace to="/login" />} />
+      </Routes>
+    </Router>
   )
 }
 

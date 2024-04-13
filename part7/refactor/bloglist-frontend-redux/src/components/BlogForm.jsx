@@ -1,9 +1,14 @@
 import { useState } from 'react'
+import { setNotification } from '../reducers/notificationReducer'
+import { addBlog } from '../reducers/blogReducer'
+import { useDispatch } from 'react-redux'
 
 const BlogForm = ({ create }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const dispatch = useDispatch()
 
   const blogFormStyle = {
     marginBottom: 20
@@ -32,12 +37,21 @@ const BlogForm = ({ create }) => {
 
   const createBlog = (event) => {
     event.preventDefault()
-    create({ title, author, url })
+    const blog = { title, author, url }
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    try {
+      dispatch(addBlog(blog))
+      handleNotificationMessage(`a new blog: ${blog.title} by ${blog.author}`)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch(exception) {
+      handleNotificationMessage('Error at blog creation', true)
+    }
   }
+
+  const handleNotificationMessage = (message, isAnError=false) => 
+    dispatch(setNotification(message, isAnError, 3))
 
   return (
     <div style={blogFormStyle}>
