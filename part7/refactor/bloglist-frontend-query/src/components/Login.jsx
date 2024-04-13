@@ -1,19 +1,45 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useUser } from '../contexts/UserContext'
+import { useNotification } from '../contexts/NotificationContext'
+import loginService from '../services/login'
+import blogService from '../services/blogs'
 
-const Login = ({ handleLogin }) => {
+const Login = () => {
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
+  const setUser = useUser()
+  const setNotification = useNotification()
 
   const login = (event) => {
     event.preventDefault()
     handleLogin({
-      password,
-      username
+      username,
+      password
     })
 
     setPassword('')
     setUsername('')
+  }
+
+  const handleLogin = async ({ username, password }) => {
+    try {
+      const userLogin = await loginService.login({
+        username, password,
+      })
+
+      window.localStorage.setItem(
+        'loggedBlogappUser',
+        JSON.stringify(userLogin)
+      )
+
+      blogService.setToken(userLogin.token)
+      
+      setUser(userLogin)
+      setNotification('User logged!')
+    } catch (exception) {
+      console.log('Error at login: ', exception)
+      setNotification('Wrong credentials', true)
+    }
   }
 
   return (
@@ -44,9 +70,5 @@ const Login = ({ handleLogin }) => {
 }
 
 Login.displayName = 'Login'
-
-PropTypes.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-}
 
 export default Login

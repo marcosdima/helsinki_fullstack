@@ -3,10 +3,12 @@ import PropTypes from 'prop-types'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 import { useNotification } from '../contexts/NotificationContext'
+import { userValue } from '../contexts/UserContext'
 
-const Blogs = ({ user }) => {
+const Blogs = () => {
   const queryClient = useQueryClient()
   const setNotification = useNotification()
+  const user = userValue()
 
   // Mutations...
   const updateBlogMutation = useMutation({
