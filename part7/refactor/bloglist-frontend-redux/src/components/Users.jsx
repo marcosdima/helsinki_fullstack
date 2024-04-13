@@ -1,4 +1,5 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const Users = () => {
     const users = useSelector(state => state.users)
@@ -17,7 +18,9 @@ const Users = () => {
                 <tbody >
                     {users.map(user => (
                         <tr key={user.id}>
-                            <td style={padding}>{user.name}</td>
+                            <td style={padding}>
+                                <Link to={`/users/${user.id}`}>{user.name}</Link>
+                            </td>
                             <td style={padding}>{user.blogs.length}</td>
                         </tr>
                     ))}
