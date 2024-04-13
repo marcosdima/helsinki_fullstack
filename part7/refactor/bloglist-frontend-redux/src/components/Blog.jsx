@@ -32,9 +32,11 @@ const Blog = ({ blog }) => {
     <span style={blogStyle} className='blog'>
       <h1>{title}</h1>
       <div>{ url }</div>
-      <div>likes { likes } <button onClick={() => handleLike(blog)}>like</button></div>
+      <div>Likes { likes } <button onClick={() => handleLike(blog)}>like</button></div>
       <div>{ author }</div>
       <button onClick={() => handleDelete(blog)} style={deleteStlyle}>remove</button>
+      <h5>Comments</h5>
+      <div>{blog?.comments.map(comment => <div>- {comment}</div>)}</div>
     </span>
   )
 }
