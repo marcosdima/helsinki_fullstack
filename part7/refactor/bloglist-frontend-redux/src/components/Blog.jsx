@@ -1,38 +1,40 @@
-import Togglable from './Togglable'
-import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { removeABlog } from '../reducers/usersReducer'
+import { removeBlog, likeBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, like, deleteThis, ownsThisBlog }) => {
-  const [display, setDisplay] = useState('flex')
+const Blog = ({ blog }) => {
+  if (!blog) return <></>
+
+  const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
+  const ownsThisBlog = user?.name === blog.user.name
 
   const { title, author, url, likes } = blog
   const blogStyle = {
-    padding: 15,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-    width: 'fit-content',
-    display
+    width: 'fit-content'
   }
   const deleteStlyle = {
     display: ownsThisBlog ? '' : 'none'
   }
-  const handleDisplay = () => {
-    setDisplay(
-      display === 'flex'
-        ? 'grid'
-        : 'flex'
-    )
+  
+  const handleDelete = (blog) => {
+    dispatch(removeBlog(blog))
+    dispatch(setNotification(`You deleted '${blog.title}'`, false, 3))
+    dispatch(removeABlog({ user, blog }))
+  }
+  const handleLike = (blog) => {
+    dispatch(likeBlog(blog))
+    dispatch(setNotification(`You liked '${blog.title}'!`, false, 3))
   }
 
   return (
     <span style={blogStyle} className='blog'>
-      { title }
-      <Togglable buttonLabel={'view'} onClick={handleDisplay} >
-        <div>{ url }</div>
-        <div>likes { likes } <button onClick={like}>like</button></div>
-        <div>{ author }</div>
-        <button onClick={() => deleteThis(blog.id)} style={deleteStlyle}>remove</button>
-      </Togglable>
+      <h1>{title}</h1>
+      <div>{ url }</div>
+      <div>likes { likes } <button onClick={() => handleLike(blog)}>like</button></div>
+      <div>{ author }</div>
+      <button onClick={() => handleDelete(blog)} style={deleteStlyle}>remove</button>
     </span>
   )
 }

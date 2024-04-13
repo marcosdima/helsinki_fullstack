@@ -5,6 +5,7 @@ import { setUser } from './reducers/userReducer'
 import blogService from './services/blogs'
 
 import Login from './components/Login'
+import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -16,17 +17,21 @@ import { initialUsers } from './reducers/usersReducer'
 
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, Navigate
+  Routes, Route, Link,
+  Navigate, useMatch
 } from 'react-router-dom'
 
 const App = () => {
   const blogFormRef = useRef()
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
+  const blogs = useSelector(state => state.blogs)
+  const match = useMatch('/blogs/:id')
 
   useEffect(() => {
     dispatch(initialBlogs())
   }, [])
+  
   useEffect(() => {
     dispatch(initialUsers())
   }, [])
@@ -40,6 +45,11 @@ const App = () => {
   }, [])
 
   const logOut = () => dispatch(reset())
+
+  
+  const blog = match
+    ? blogs.find(blog => blog.id === match.params.id)
+    : null
 
   const padding = { padding: 5 }
   const margin = { margin: 10 }
@@ -56,7 +66,7 @@ const App = () => {
   )
 
   return (
-    <Router>
+    <>
       <h1>Blogs App</h1>
 
       <div>
@@ -75,8 +85,9 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
         <Route path="/users/:id" element={<User />} />
+        <Route path="/blogs/:id" element={<Blog blog={blog}/>} />
       </Routes>
-    </Router>
+    </>
   )
 }
 
