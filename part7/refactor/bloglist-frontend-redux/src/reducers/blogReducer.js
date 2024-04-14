@@ -47,6 +47,15 @@ export const likeBlog = blog => {
     }
 }
 
+export const commentBlog = (blog, comment) => {
+    const commentedBlog = {
+        ...blog,
+        comments: blog?.comments.concat(comment) ?? [comment],
+    }
+    console.log(commentedBlog)
+    blogsService.update(commentedBlog).then(update => dispatch(updateBlog(update))).catch(error => console.log("AUCH"))
+}
+
 export const removeBlog = blog => {
     return dispatch => {
         blogsService.remove(blog.id).then(removed => dispatch(deleteBlog(blog)))
