@@ -12,12 +12,12 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
+import { LinkStyled, Body, Bar, Title, Button } from './styles'
 import { reset } from './reducers/userReducer'
 import { initialUsers } from './reducers/usersReducer'
 
 import {
-  BrowserRouter as Router,
-  Routes, Route, Link,
+  Routes, Route,
   Navigate, useMatch
 } from 'react-router-dom'
 
@@ -66,28 +66,28 @@ const App = () => {
   )
 
   return (
-    <>
-      <h1>Blogs App</h1>
+    <Body>
+      <Title>Blogs App</Title>
 
-      <div>
-        <Link style={padding} to="/" >Blogs</Link>
-        <Link style={padding} to="/users" >Users</Link>
+      <Bar>
+        <LinkStyled style={padding} to="/" >Blogs</LinkStyled>
+        <LinkStyled style={padding} to="/users" >Users</LinkStyled>
         {user
-          ? <><em>{user.name} logged in</em> <button onClick={logOut} style={margin}>logout</button></>
-          : <Link style={padding} to="/login">login</Link>
+          ? <><em>{user.name} logged in</em> <Button onClick={logOut} style={margin}>logout</Button></>
+          : <LinkStyled style={padding} to="/login">login</LinkStyled>
         }
-      </div>
+      </Bar>
       
       <Notification />
 
       <Routes>
         <Route path='/' element={body()} />
-        <Route path='/login' element={<Login />} />
+        <Route path='/login' element={!user ? <Login /> : body()} />
         <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
         <Route path="/users/:id" element={<User />} />
         <Route path="/blogs/:id" element={<Blog blog={blog}/>} />
       </Routes>
-    </>
+    </Body>
   )
 }
 

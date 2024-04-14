@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { removeABlog } from '../reducers/usersReducer'
 import { removeBlog, likeBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Button, Title } from '../styles'
 
 const Blog = ({ blog }) => {
   if (!blog) return <></>
@@ -36,14 +37,14 @@ const Blog = ({ blog }) => {
 
   return (
     <span style={blogStyle} className='blog'>
-      <h1>{title}</h1>
-      <div>{ url }</div>
-      <div>Likes { likes } <button onClick={() => handleLike(blog)}>like</button></div>
-      <div>{ author }</div>
-      <button onClick={() => handleDelete(blog)} style={deleteStlyle}>remove</button>
+      <Title>{title}</Title>
+      <div>URL: { url }</div>
+      <div>Likes { likes } <Button onClick={() => handleLike(blog)}>like</Button></div>
+      <div>Author: { author }</div>
+      <Button onClick={() => handleDelete(blog)} style={deleteStlyle}>remove</Button>
       <h5>Comments</h5>
       <form onSubmit={handleComment}>
-        Comment: <input name="comment"></input> <button type='submit'>send</button>
+        Comment: <input name="comment"></input> <Button type='submit'>send</Button>
       </form>
       <div>{blog?.comments.map(comment => <div key={comment}>- {comment}</div>)}</div>
     </span>

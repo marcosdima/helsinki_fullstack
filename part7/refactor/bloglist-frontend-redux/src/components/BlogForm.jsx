@@ -3,6 +3,7 @@ import { setNotification } from '../reducers/notificationReducer'
 import { addBlog } from '../reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { createABlog } from '../reducers/usersReducer'
+import { Button } from '../styles'
 
 const BlogForm = () => {
   const [title, setTitle] = useState('')
@@ -60,19 +61,25 @@ const BlogForm = () => {
     <div style={blogFormStyle}>
       <form onSubmit={createBlog}>
         <h2>create new</h2>
-        {
-          fields.map(field =>
-            <div key={field.name}>
-              {field.name}: <input
-                value={field.variable}
-                id={field.name}
-                placeholder={field.placeholder}
-                onChange={({ target }) => field.setAtt(target.value)}
-              />
-            </div>
-          )
-        }
-        <button type="submit" id='createButton'>create</button>
+        <table>
+          <tbody>
+            {fields.map(field =>
+              <tr key={field.name}>
+                <td>{field.name}:</td>
+                <td>
+                  <input
+                    value={field.variable}
+                    id={field.name}
+                    placeholder={field.placeholder}
+                    onChange={({ target }) => field.setAtt(target.value)}
+                  />
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        
+        <Button type="submit" id='createButton'>create</Button>
       </form>
     </div>
   )
