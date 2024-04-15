@@ -16,6 +16,7 @@ const BlogForm = () => {
     onSuccess: (newBlog) => {
       const blogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
+      setNotification(`You created '${newBlog.title}'`)
     }
   })
 
@@ -47,7 +48,7 @@ const BlogForm = () => {
   const createBlog = (event) => {
     event.preventDefault()
     createBlogMutation.mutate({ title, author, url })
-    setNotification(`You created '${title}'`)
+    
     setTitle('')
     setAuthor('')
     setUrl('')

@@ -46,7 +46,7 @@ const App = () => {
 
   const logOut = () => dispatch(reset())
 
-  
+  queryClient.getQueryData(['blogs'])
   const blog = match
     ? blogs.find(blog => blog.id === match.params.id)
     : null
