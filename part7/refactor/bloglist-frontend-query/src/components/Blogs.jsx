@@ -1,9 +1,6 @@
-import Blog from './Blog'
 import PropTypes from 'prop-types'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import blogService from '../services/blogs'
-import { useNotification } from '../contexts/NotificationContext'
-import { userValue } from '../contexts/UserContext'
 import { Link } from 'react-router-dom'
 
 const Blogs = () => {

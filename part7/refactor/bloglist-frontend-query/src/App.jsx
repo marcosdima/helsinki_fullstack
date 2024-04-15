@@ -22,7 +22,7 @@ const App = () => {
   const setUser = useUser()
   const user = userValue()
   const blogFormRef = useRef()
-  const match = useMatch('/blogs/:id')
+  const match = useMatch('/users/:id')
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -52,17 +52,12 @@ const App = () => {
   const padding = { padding: 5 }
   const margin = { margin: 10 }
 
-  const blogs = queryClient.getQueryData(['blogs'])
-  const blog = match
-    ? blogs?.find(blog => blog.id === match.params.id)
-    : null
-
   const users = queryClient.getQueryData(['users'])
   const userTarget = match
     ? users?.find(user => user.id === match.params.id)
     : null
 
-  return (
+    return (
     <>
       <h1>Blogs App</h1>
 
@@ -82,7 +77,7 @@ const App = () => {
         <Route path='/login' element={!user ? <Login /> : body()} />
         <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
         <Route path="/users/:id" element={<User user={userTarget} />} />
-        <Route path="/blogs/:id" element={blog ? <Blog blog={blog} /> : <Navigate replace to="/" />} />
+        <Route path="/blogs/:id" element={<Blog />} />
       </Routes>
     </>
   )

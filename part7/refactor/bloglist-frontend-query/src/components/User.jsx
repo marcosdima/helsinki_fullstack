@@ -1,5 +1,8 @@
+import { useNavigate } from "react-router-dom"
+
 const User = ({ user }) => {
-    if (!user) return null
+    const navigate = useNavigate()
+    if (!user) return navigate('/')
 
     return (
         <div>
