@@ -1,18 +1,24 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog.jsx'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
+import Togglable from './components/Togglable.jsx'
+
 import blogService from './services/blogs'
-import { useNotification  } from './contexts/NotificationContext'
 import { userValue, useUser } from './contexts/UserContext.jsx'
+import Users from './components/Users.jsx'
+
+import {
+  Routes, Route,
+  Navigate, Link
+} from 'react-router-dom'
 
 const App = () => {
   const setUser = useUser()
   const user = userValue()
   const blogFormRef = useRef()
-  const setNotification = useNotification()
 
   useEffect(() => {
     const loggedUserJSON = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
@@ -27,31 +33,43 @@ const App = () => {
     window.localStorage.clear()
   }
 
-  const handleNotificationMessage = (message, isAnError=false) =>
-    setNotification(message, isAnError)
+  const body = () => (
+    <div>
+      <div style={margin}>
+        <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
+                <BlogForm />
+        </Togglable>
+      </div>
+      <Blogs />
+    </div>
+  )
 
-  const login = () => <>
-    <h2>log in to application</h2>
-    <Notification />
-    <Login />
-  </>
+  const padding = { padding: 5 }
+  const margin = { margin: 10 }
 
   return (
-    <div>
-      {
-        user === null
-          ? login()
-          : <>
-            <h2>blogs</h2>
-            <Notification />
-            <p> {user.name} logged in <button onClick={logOut}>logout</button> </p>
-            <Togglable buttonLabel={'New Blog'} ref={blogFormRef}>
-              <BlogForm />
-            </Togglable>
-            <Blogs />
-          </>
-      }
-    </div>
+    <>
+      <h1>Blogs App</h1>
+
+      <div>
+        <Link style={padding} to="/" >Blogs</Link>
+        <Link style={padding} to="/users" >Users</Link>
+        {user
+          ? <><em>{user.name} logged in</em> <button onClick={logOut} style={margin}>logout</button></>
+          : <Link style={padding} to="/login">login</Link>
+        }
+      </div>
+      
+      <Notification />
+
+      <Routes>
+        <Route path='/' element={body()} />
+        <Route path='/login' element={!user ? <Login /> : body()} />
+        <Route path="/users" element={user ? <Users /> : <Navigate replace to="/login" />} />
+        <Route path="/users/:id" element={<div />} />
+        <Route path="/blogs/:id" element={<div />} />
+      </Routes>
+    </>
   )
 }
 
