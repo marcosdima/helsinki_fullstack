@@ -93,13 +93,13 @@ let books = [
   },
 ]
 
-/*
-  you can remove the placeholder query once your first one has been implemented 
-*/
-
 const typeDefs = `
-  type Query {
-    dummy: Int
+  type Book {
+    title: String!,
+    published: Int!,
+    author: String,
+    id: ID!,
+    genres: [String!]!
   }
 `
 
