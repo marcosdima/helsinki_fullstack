@@ -13,7 +13,7 @@ const Authors = () => {
     }
 
     const { data: { allAuthors: authors } } = result
-    console.log(authors)
+
     return (
         <div>
             <h1>Authors</h1>

@@ -22,6 +22,7 @@ const Books = () => {
                         <th>Title</th>
                         <th>Author</th>
                         <th>Published</th>
+                        <th>Genres</th>
                     </tr>
                     {
                         books.map(book =>
@@ -29,6 +30,7 @@ const Books = () => {
                                 <td>{book.title}</td>
                                 <td>{book.author}</td>
                                 <td>{book.published}</td>
+                                <td>Genres: {book.genres.join(', ')}</td>
                             </tr>
                         )
                     }
