@@ -14,24 +14,27 @@ const Books = () => {
     const { data: { allBooks: books } } = result 
     
     return (
-        <table>
-            <tbody>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Published</th>
-                </tr>
-                {
-                    books.map(book =>
-                        <tr key={book.id}>
-                            <td>{book.title}</td>
-                            <td>{book.author}</td>
-                            <td>{book.published}</td>
-                        </tr>
-                    )
-                }
-            </tbody>
-        </table>
+        <div>
+            <h1>Books</h1>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Published</th>
+                    </tr>
+                    {
+                        books.map(book =>
+                            <tr key={book.id}>
+                                <td>{book.title}</td>
+                                <td>{book.author}</td>
+                                <td>{book.published}</td>
+                            </tr>
+                        )
+                    }
+                </tbody>
+            </table>
+        </div>
     )
 }
 
