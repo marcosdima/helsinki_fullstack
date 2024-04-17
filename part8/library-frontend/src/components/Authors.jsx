@@ -34,7 +34,7 @@ const Authors = () => {
                     }
                 </tbody>
             </table>
-            <EditAuthor />
+            <EditAuthor authorNames={authors.map(author => author.name)}/>
         </div>
     )
 }
