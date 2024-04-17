@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useMutation } from "@apollo/client"
-import { ADD_BOOK } from '../services/query'
+import { ADD_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../services/query'
 import Input from "./Input"
 
 const BookForm = () => {
@@ -9,7 +9,9 @@ const BookForm = () => {
     const [published, setPublished] = useState('')
     const [genres, setGenres] = useState([])
     const [genre, setGenre] = useState('')
-    const [addBlog] = useMutation(ADD_BOOK)
+    const [addBlog] = useMutation(ADD_BOOK, {
+        refetchQueries: [ { query: ALL_BOOKS }, { query: ALL_AUTHORS } ]
+    })
 
     const handleBookCreation = (event) => {
         event.preventDefault()
