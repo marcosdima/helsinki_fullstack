@@ -7,14 +7,27 @@ const findAuthor = async (name='') => {
     return authors.find(author => author.name === name)
 }
 
-const findBook = async (title='') => {
-    const books = await Book.find({})
-    return books.find(book => book.title === title)
+const findBook = async ({ author, genre }) => {
+    let query = {}
+    if (genre) query['genres'] = genre
+    
+    if (author) {
+        const existAuthor = await Author.findOne({ name: author })
+        query['author'] = existAuthor?._id ?? null
+    }
+    
+    return await Book.find(query)
 }
 
 const handleError = (error) => {
+    console.log(error)
     if (error.name === 'ValidationError') {
         const message = error.errors?.name ?? error.errors.title 
+        throw new GraphQLError(message, {
+            extensions: { code: 'BAD_USER_INPUT' }
+        })
+    } else if (error.name === 'MongoServerError') {
+        const message = error
         throw new GraphQLError(message, {
             extensions: { code: 'BAD_USER_INPUT' }
         })

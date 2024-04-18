@@ -64,13 +64,10 @@ const resolvers = {
   Query: {
     bookCount: async () => await Book.find({}).length,
     authorCount: async () => await Author.find({}).length,
-    allBooks: async (root, args) => await Book.find({}).populate("author")
-      /*
-      books.filter(book =>
-        (!args.author || book.author === args.author) &&
-        (!args.genre || book.genres.includes(args.genre))
-      )*/
-    ,
+    allBooks: async (root, args) => {
+      const book = await findBook({ ...args })
+      return book
+    },
     allAuthors: async () => await Author.find({})
   },
   Mutation: {
