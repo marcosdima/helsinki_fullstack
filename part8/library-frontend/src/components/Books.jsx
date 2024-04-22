@@ -11,8 +11,9 @@ const Books = () => {
         </>
         )
     }
-    const { data: { allBooks: books } } = result 
     
+    const { data: { allBooks: books } } = result 
+
     return (
         <div>
             <h1>Books</h1>
@@ -28,7 +29,7 @@ const Books = () => {
                         books.map(book =>
                             <tr key={book.id}>
                                 <td>{book.title}</td>
-                                <td>{book.author}</td>
+                                <td>{book.author.name}</td>
                                 <td>{book.published}</td>
                                 <td>Genres: {book.genres.join(', ')}</td>
                             </tr>
