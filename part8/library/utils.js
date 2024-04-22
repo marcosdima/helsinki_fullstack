@@ -16,7 +16,7 @@ const findBook = async ({ author, genre }) => {
         query['author'] = existAuthor?._id ?? null
     }
     
-    return await Book.find(query)
+    return await Book.find(query).populate('author')
 }
 
 const handleError = (error) => {
