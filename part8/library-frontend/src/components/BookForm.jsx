@@ -46,7 +46,7 @@ const BookForm = () => {
                         /> 
                     <button type="button" onClick={() => handleaddGenre()}>+</button>
                 </div>
-                <button type="submit">Create Blog</button>
+                <button type="submit">Add Book</button>
             </form>
         </>
     )

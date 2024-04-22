@@ -17,7 +17,6 @@ const EditAuthor = ({ authorNames }) => {
 
         editAuthor({ variables: { name, born: Number(born) } })
 
-        setName('')
         setBorn('')
     }
 
