@@ -7,15 +7,15 @@ const findAuthor = async (name='') => {
     return authors.find(author => author.name === name)
 }
 
-const findBook = async ({ author, genre }) => {
+const findBook = async ({ author, genres }) => {
     let query = {}
-    if (genre) query['genres'] = genre
+    if (genres && genres.length > 0) query['genres'] = { "$all": genres }
     
     if (author) {
         const existAuthor = await Author.findOne({ name: author })
         query['author'] = existAuthor?._id ?? null
     }
-    
+
     return await Book.find(query).populate('author')
 }
 

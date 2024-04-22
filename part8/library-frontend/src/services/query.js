@@ -55,9 +55,29 @@ export const EDIT_AUTHOR = gql`
 `
 
 export const LOGIN = gql`
-  mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password)  {
-      value
+    mutation login($username: String!, $password: String!) {
+        login(username: $username, password: $password)  {
+            value
+        }
     }
-  }
+`
+
+export const GENRES = gql`
+    query {
+        genres
+    }
+`
+
+export const BOOKS_FILTER = gql`
+    query books_filter($genres:[String!]!) {
+        allBooks(genres: $genres) {
+            title
+            author {
+                name
+            }
+            published
+            genres
+            id
+        }
+    }
 `

@@ -53,9 +53,10 @@ const typeDefs = `
   type Query {
     bookCount: Int!,
     authorCount: Int!,
-    allBooks(author: String, genre: String): [Book!]!,
+    allBooks(author: String, genres: [String]): [Book!]!,
     allAuthors : [Author!]!,
     allUsers: [User!]!,
+    genres: [String!]!,
     me: User
   }
 
@@ -88,6 +89,12 @@ const resolvers = {
     allBooks: async (root, args) => await findBook({ ...args }),
     allAuthors: async () => await Author.find({}),
     allUsers: async () => await User.find({}),
+    genres: async () => {
+      const books = await Book.find({})
+      const genres = new Set()
+      books.forEach(book => book.genres.forEach(genre => genres.add(genre)))
+      return Array.from(genres)
+    },
     me: (root, args, context) => context.currentUser
   },
   Mutation: {
