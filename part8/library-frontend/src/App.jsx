@@ -16,7 +16,7 @@ function App() {
     localStorage.clear()
     client.resetStore()
   }
-  console.log(token)
+
   return (
     <div>
       <Bar>

@@ -1,8 +1,11 @@
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../services/query'
+import { useState } from 'react'
 
 const Books = () => {
+    const [filters, setFilters] = useState([])
     const result = useQuery(ALL_BOOKS)
+    const genres = new Set()
 
     if (result.loading) {
         return (
@@ -11,8 +14,21 @@ const Books = () => {
         </>
         )
     }
+
+    const addGenre = (value) => {
+        if (value === 'ALL') setFilters([])
+        else if (!filters.includes(value)) setFilters(filters.concat(value))
+    }
     
     const { data: { allBooks: books } } = result 
+    books.forEach(book => {
+        genres.add(...book.genres)
+    })
+    const booksFiltered = books.filter(book => 
+        filters.length > 0
+        ? filters.every(genre => book.genres.includes(genre))
+        : true
+    ) 
 
     return (
         <div>
@@ -26,7 +42,7 @@ const Books = () => {
                         <th>Genres</th>
                     </tr>
                     {
-                        books.map(book =>
+                        booksFiltered.map(book =>
                             <tr key={book.id}>
                                 <td>{book.title}</td>
                                 <td>{book.author.name}</td>
@@ -37,6 +53,16 @@ const Books = () => {
                     }
                 </tbody>
             </table>
+            {
+                genres 
+                ? [...Array.from(genres), 'ALL'].map(genre =>
+                    <button key={genre} onClick={() => addGenre(genre)}>
+                        {genre}
+                    </button>
+                )
+                : null
+            }
+            <div>[{filters.join(', ')}]</div>
         </div>
     )
 }
