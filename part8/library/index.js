@@ -9,6 +9,9 @@ const Author = require('./schemas/author')
 const User = require('./schemas/user')
 const { findAuthor, findBook, handleError } = require('./utils')
 
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
+
 require('dotenv').config()
 
 const MONGODB_URI = process.env.MONGODB_URI
@@ -132,6 +135,8 @@ const resolvers = {
         handleError(error)
       }
 
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+
       return book.populate('author')
     },
     editAuthor: async (root, args, context)  => {
@@ -187,6 +192,11 @@ const resolvers = {
       }
   
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
+    }
+  },
+  Suscription: {
+    bookAdded: {
+      suscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
     }
   }
 }
