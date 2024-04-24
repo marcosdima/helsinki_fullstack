@@ -1,7 +1,8 @@
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { useEffect } from 'react'
 import { BOOKS_FILTER, GENRES } from '../services/query'
 import { useState } from 'react'
+import BooksDisplayer from './BooksDisplayer'
 
 const Books = () => {
     const [filters, setFilters] = useState([])
@@ -27,26 +28,7 @@ const Books = () => {
     return (
         <div>
             <h1>Books</h1>
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Published</th>
-                        <th>Genres</th>
-                    </tr>
-                    {
-                        books.map(book =>
-                            <tr key={book.id}>
-                                <td>{book.title}</td>
-                                <td>{book.author.name}</td>
-                                <td>{book.published}</td>
-                                <td>Genres: {book.genres.join(', ')}</td>
-                            </tr>
-                        )
-                    }
-                </tbody>
-            </table>
+            <BooksDisplayer books={books}/>
             {
                 genres 
                 ? [...genres, 'ALL'].map(genre =>
