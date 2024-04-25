@@ -1,5 +1,5 @@
 import { useApolloClient, useSubscription } from '@apollo/client'
-import { BOOK_ADDED } from './services/query'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from './services/query'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Bar, StyledLink } from './styles'
 import { useState } from 'react'
@@ -15,10 +15,44 @@ function App() {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      const { data: { bookAdded: { title } }} = data
-      if (title) window.alert(`Added ${title}!`)
+      const { data: { bookAdded }} = data
+      window.alert(`Added ${bookAdded.title}!`)
+      
+      updateBooksData(bookAdded)
+      updateAuthorsData(bookAdded.author)
     }
   })
+
+  const includedIn = (set, object) => {
+      set.map(p => p.id).includes(object.id)  
+  }
+
+  const updateBooksData = (book) => {
+    const { allBooks } = client?.readQuery({ query: ALL_BOOKS }) ?? []
+    let result
+
+    if (!allBooks || allBooks.length == 0) result = [book]
+    else if (!includedIn(allBooks, book)) result = allBooks.concat(book)
+    else result = allBooks
+                
+    client.writeQuery({
+        query: ALL_BOOKS,
+        data: { allBooks: result }
+    })
+  }
+  const updateAuthorsData = (author) => {
+    const { allAuthors } = client?.readQuery({ query: ALL_AUTHORS }) ?? []
+    let result
+
+    if (!allAuthors || allAuthors.length == 0) result = [author]
+    else if (!includedIn(allAuthors, author)) result = allAuthors.concat(author)
+    else result = allAuthors
+                
+    client.writeQuery({
+        query: ALL_AUTHORS,
+        data: { allAuthors: result }
+    })
+  }
 
   const logout = () => {
     setToken(null)
