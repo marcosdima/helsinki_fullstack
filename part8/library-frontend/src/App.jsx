@@ -1,4 +1,5 @@
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useSubscription } from '@apollo/client'
+import { BOOK_ADDED } from './services/query'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Bar, StyledLink } from './styles'
 import { useState } from 'react'
@@ -11,6 +12,13 @@ import Recommend from './components/Recommend'
 function App() {
   const [token, setToken] = useState(null)
   const client = useApolloClient()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const { data: { bookAdded: { title } }} = data
+      if (title) window.alert(`Added ${title}!`)
+    }
+  })
 
   const logout = () => {
     setToken(null)
