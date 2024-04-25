@@ -10,6 +10,11 @@ const schema = new mongoose.Schema({
   born: {
     type: Number,
   },
+  wrote: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Book',
+    default: 0
+  }]
 })
 
 module.exports = mongoose.model('Author', schema)

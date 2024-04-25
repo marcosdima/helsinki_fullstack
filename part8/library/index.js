@@ -47,7 +47,7 @@ const typeDefs = `
   type Author {
     name: String!,
     born: Int,
-    bookCount: Int,
+    bookCount: Int!,
     id: ID!
   }
 
@@ -102,7 +102,7 @@ const resolvers = {
     bookCount: async () => await Book.find({}).length,
     authorCount: async () => await Author.find({}).length,
     allBooks: async (root, args) => await findBook({ ...args }),
-    allAuthors: async () => await Author.find({}),
+    allAuthors: async () => await Author.find({}).populate('wrote'),
     allUsers: async () => await User.find({}),
     genres: async () => {
       const books = await Book.find({})
@@ -134,11 +134,13 @@ const resolvers = {
           handleError(error)
         }
       }
-
+      
       let book = new Book({ ...args, author: author._id })
       
       try {
         await book.save()
+        author.wrote.push(book._id)
+        await author.save()
       } catch(error) {
         handleError(error)
       }
@@ -208,6 +210,9 @@ const resolvers = {
     bookAdded: {
       subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
     }
+  },
+  Author: {
+    bookCount: (root) => root.wrote.length
   }
 }
 
