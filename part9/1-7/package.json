@@ -4,7 +4,8 @@
   "description": "Exercises 1-7",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "calcu": "ts-node bmiCalculator.ts"
   },
   "author": "Marcos Di Matteo",
   "license": "ISC",
