@@ -11,6 +11,10 @@ type Rating = {
     rating: number,
     description: string
 }
+type ExerciseParams = {
+    dairyExercise: Array<number>,
+    target: number
+}
 
 const higherThanZero = (array: Array<number>): number => {
     return array.reduce(
@@ -45,8 +49,10 @@ const setRating = (target: number, reality: number): Rating => {
     return { rating, description }
 }
 
-const calculateExercises = (dairyExercise: Array<number>, target: number): Result => {
+const calculateExercises = (params: ExerciseParams): Result => {
+    const { target, dairyExercise } = params
     if (target === 0) throw Error("Target can't be zero")
+
     const average = setSverage(dairyExercise)
     const { rating, description } = setRating(target, average)
 
@@ -64,8 +70,26 @@ const calculateExercises = (dairyExercise: Array<number>, target: number): Resul
     return result; 
 }
 
+const parseArgs = (): ExerciseParams => {
+    const args: String[] = process.argv
+    if (args.length < 4) throw Error("Not enough argument")
+    
+    const [first, second, third, ...rest] = args
+    const target = Number(third)
+    if (isNaN(target)) throw Error("Arguments can only be numbers!")
+
+    let dairyExercise: Array<number> = []
+    rest.forEach((number) => {
+        const n = Number(number)
+        if (isNaN(n)) throw Error("Arguments can only be numbers!")
+        dairyExercise.push(n)
+    })
+
+    return { target, dairyExercise }
+}
+
 try {
-    console.log(calculateExercises([3, 10, 2, 4.5, 0, 3, 1], 21));
+    console.log(calculateExercises(parseArgs()));
   } catch (error: unknown) {
     let errorMessage = 'Error: '
     if (error instanceof Error) {
