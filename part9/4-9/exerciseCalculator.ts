@@ -11,7 +11,7 @@ type Rating = {
     rating: number,
     description: string
 };
-type ExerciseParams = {
+export type ExerciseParams = {
     dairyExercise: Array<number>,
     target: number
 };
@@ -49,13 +49,13 @@ const setRating = (target: number, reality: number): Rating => {
     return { rating, description };
 };
 
-const calculateExercises = (params: ExerciseParams): Result => {
+export const calculateExercises = (params: ExerciseParams): Result => {
     const { target, dairyExercise } = params;
     if (target === 0) throw Error("Target can't be zero");
 
     const average = setSverage(dairyExercise);
     const { rating, description } = setRating(target, average);
-
+    console.log(dairyExercise);
     const result = {
         periodLength: dairyExercise.length,
         trainingDays: higherThanZero(dairyExercise),
