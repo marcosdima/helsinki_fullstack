@@ -6,22 +6,22 @@ type Result = {
     ratingDescription: string,
     target: number,
     average: number
-}
+};
 type Rating = {
     rating: number,
     description: string
-}
+};
 type ExerciseParams = {
     dairyExercise: Array<number>,
     target: number
-}
+};
 
 const higherThanZero = (array: Array<number>): number => {
     return array.reduce(
         (previusValue, currentValue) => currentValue > 0 ? 1 + previusValue : previusValue,
         0
     );
-}
+};
 
 const setSverage = (array: Array<number>): number => {
     const total = array.reduce(
@@ -29,7 +29,7 @@ const setSverage = (array: Array<number>): number => {
         0
     );
     return total / array.length;
-}
+};
 
 const setRating = (target: number, reality: number): Rating => {
     let rating = 0;
@@ -46,15 +46,15 @@ const setRating = (target: number, reality: number): Rating => {
         description = "I'm disapointing bro :'(";
     }
 
-    return { rating, description }
-}
+    return { rating, description };
+};
 
 const calculateExercises = (params: ExerciseParams): Result => {
-    const { target, dairyExercise } = params
-    if (target === 0) throw Error("Target can't be zero")
+    const { target, dairyExercise } = params;
+    if (target === 0) throw Error("Target can't be zero");
 
-    const average = setSverage(dairyExercise)
-    const { rating, description } = setRating(target, average)
+    const average = setSverage(dairyExercise);
+    const { rating, description } = setRating(target, average);
 
     const result = {
         periodLength: dairyExercise.length,
@@ -64,34 +64,33 @@ const calculateExercises = (params: ExerciseParams): Result => {
         ratingDescription: description,
         average,
         success: average >= target
-    } 
-
+    } ;
 
     return result; 
-}
+};
 
 const parseArgs = (): ExerciseParams => {
-    const args: String[] = process.argv
-    if (args.length < 4) throw Error("Not enough argument")
+    const args: string[] = process.argv;
+    if (args.length < 4) throw Error("Not enough argument");
     
-    const [first, second, third, ...rest] = args
-    const target = Number(third)
-    if (isNaN(target)) throw Error("Arguments can only be numbers!")
+    const [,, third, ...rest] = args;
+    const target = Number(third);
+    if (isNaN(target)) throw Error("Arguments can only be numbers!");
 
-    let dairyExercise: Array<number> = []
+    const dairyExercise: Array<number> = [];
     rest.forEach((number) => {
-        const n = Number(number)
-        if (isNaN(n)) throw Error("Arguments can only be numbers!")
-        dairyExercise.push(n)
-    })
+        const n = Number(number);
+        if (isNaN(n)) throw Error("Arguments can only be numbers!");
+        dairyExercise.push(n);
+    });
 
-    return { target, dairyExercise }
-}
+    return { target, dairyExercise };
+};
 
 try {
     console.log(calculateExercises(parseArgs()));
   } catch (error: unknown) {
-    let errorMessage = 'Error: '
+    let errorMessage = 'Error: ';
     if (error instanceof Error) {
       errorMessage += error.message;
     }

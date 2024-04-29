@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "calculateBmi": "ts-node bmiCalculator.ts",
     "calculateExercises": "ts-node exerciseCalculator.ts",
-    "dev": "ts-node-dev index.ts"
+    "dev": "ts-node-dev index.ts",
+    "lint": "eslint --ext .ts ."
   },
   "author": "Marcos Di Matteo",
   "license": "ISC",
