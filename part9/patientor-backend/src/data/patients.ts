@@ -1,3 +1,5 @@
+import { PatientWithNoSsn } from "../types";
+
 const data = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
@@ -40,5 +42,8 @@ const data = [
         "occupation": "Digital evangelist"
     }
 ];
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getPatients = ():PatientWithNoSsn[] => data.map(({ ssn, ...rest }) => rest);
 
 export default data;
